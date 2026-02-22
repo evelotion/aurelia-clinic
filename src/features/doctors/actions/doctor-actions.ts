@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -19,7 +19,7 @@ export async function createDoctor(formData: FormData) {
   const data = Object.fromEntries(formData.entries());
   const parsed = doctorSchema.safeParse(data);
   
-  if (!parsed.success) return { error: parsed.error.errors[0].message };
+  if (!parsed.success) return { error: (parsed.error as any).errors[0].message };
 
   try {
    

@@ -1,4 +1,4 @@
-﻿"use server";
+"use server";
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
@@ -15,7 +15,7 @@ export async function createBranch(formData: FormData) {
   const parsed = branchSchema.safeParse(data);
   
   if (!parsed.success) {
-    return { error: parsed.error.errors[0].message };
+    return { error: (parsed.error as any).errors[0].message };
   }
 
   try {
