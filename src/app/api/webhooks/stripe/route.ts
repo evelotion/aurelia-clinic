@@ -1,6 +1,6 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { sendBookingConfirmation } from "@/lib/mail/mailer";
 
 export async function POST(req: Request) {
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   try {
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err: any) {
-    console.error("⚠️ Webhook signature verification failed.", err.message);
+    console.error("?? Webhook signature verification failed.", err.message);
     return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
