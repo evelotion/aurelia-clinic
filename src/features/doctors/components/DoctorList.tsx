@@ -6,7 +6,7 @@ export default function DoctorList({ doctors }: { doctors: any[] }) {
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = (userId: string, name: string) => {
-    if (confirm(`Remove ${name}'s account?`)) startTransition(() => deleteDoctor(userId));
+    if (confirm(`Remove ${name}'s account?`)) startTransition(() => { deleteDoctor(userId); });
   };
 
   if (doctors.length === 0) return <div className="premium-glass p-12 rounded-3xl text-center"><p className="text-text-muted font-light">No doctors registered yet.</p></div>;
@@ -49,3 +49,4 @@ export default function DoctorList({ doctors }: { doctors: any[] }) {
     </div>
   );
 }
+

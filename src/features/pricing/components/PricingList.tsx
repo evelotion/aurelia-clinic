@@ -4,7 +4,7 @@ import { deletePricing } from "../actions/pricing-actions";
 
 export default function PricingList({ pricings }: { pricings: any[] }) {
   const [isPending, startTransition] = useTransition();
-  const handleDelete = (id: string, name: string) => { if (confirm(`Remove pricing for ${name}?`)) startTransition(() => deletePricing(id)); };
+  const handleDelete = (id: string, name: string) => { if (confirm(`Remove pricing for ${name}?`)) startTransition(() => { deletePricing(id); }); };
   if (pricings.length === 0) return <div className="premium-glass p-12 rounded-3xl text-center"><p className="text-text-muted font-light">No pricing configurations found.</p></div>;
 
   return (
@@ -37,3 +37,4 @@ export default function PricingList({ pricings }: { pricings: any[] }) {
     </div>
   );
 }
+

@@ -4,7 +4,7 @@ import { deleteBranch } from "../actions/branch-actions";
 
 export default function BranchList({ branches }: { branches: any[] }) {
   const [isPending, startTransition] = useTransition();
-  const handleDelete = (id: string, name: string) => { if (confirm(`Delete ${name}?`)) startTransition(() => deleteBranch(id)); };
+  const handleDelete = (id: string, name: string) => { if (confirm(`Delete ${name}?`)) startTransition(() => { deleteBranch(id); }); };
   if (branches.length === 0) return <div className="premium-glass p-12 rounded-3xl text-center"><p className="text-text-muted font-light">No branches found.</p></div>;
 
   return (
@@ -35,3 +35,4 @@ export default function BranchList({ branches }: { branches: any[] }) {
     </div>
   );
 }
+

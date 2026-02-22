@@ -4,7 +4,7 @@ import { deleteTreatment } from "../actions/treatment-actions";
 
 export default function TreatmentList({ treatments }: { treatments: any[] }) {
   const [isPending, startTransition] = useTransition();
-  const handleDelete = (id: string, name: string) => { if (confirm(`Delete ${name}?`)) startTransition(() => deleteTreatment(id)); };
+  const handleDelete = (id: string, name: string) => { if (confirm(`Delete ${name}?`)) startTransition(() => { deleteTreatment(id); }); };
   if (treatments.length === 0) return <div className="premium-glass p-12 rounded-3xl text-center"><p className="text-text-muted font-light">No treatments found.</p></div>;
 
   return (
@@ -37,3 +37,4 @@ export default function TreatmentList({ treatments }: { treatments: any[] }) {
     </div>
   );
 }
+

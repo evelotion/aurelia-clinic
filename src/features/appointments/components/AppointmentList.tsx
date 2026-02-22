@@ -88,3 +88,4 @@ export default function AppointmentList({ appointments, role }: { appointments: 
     </div>
   );
 }
+
