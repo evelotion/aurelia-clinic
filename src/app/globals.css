@@ -1,0 +1,48 @@
+﻿@import "tailwindcss";
+
+@theme {
+  /* Mapping Font Baru */
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
+  
+  /* Palet Warna Midnight Luxury Baru */
+  --color-midnight: #0A0A0F;
+  --color-midnight-light: #151520;
+  --color-champagne: #E3C699;
+  --color-champagne-hover: #CDB083;
+  --color-frost: rgba(255, 255, 255, 0.05);
+  --color-frost-border: rgba(255, 255, 255, 0.1);
+  --color-text-light: #F0F0F5;
+  --color-text-muted: #9CA3AF;
+}
+
+@layer base {
+  body {
+    @apply bg-midnight text-text-light antialiased selection:bg-champagne selection:text-midnight;
+  }
+}
+
+/* Utility Class untuk Standarisasi Glass Component */
+@layer components {
+  .premium-glass {
+    @apply bg-frost backdrop-blur-xl border border-frost-border shadow-[0_8px_32px_0_rgba(0,0,0,0.5)];
+  }
+
+  .premium-input {
+    @apply w-full px-0 py-3 bg-transparent border-0 border-b border-frost-border focus:border-champagne text-text-light placeholder-text-muted transition-colors sm:text-sm focus:ring-0 outline-none;
+  }
+
+  .premium-label {
+    @apply text-[10px] font-bold text-text-muted uppercase tracking-widest group-focus-within:text-champagne transition-colors;
+  }
+
+  .premium-button {
+    @apply px-8 py-3 bg-champagne/90 backdrop-blur-md text-midnight rounded-xl text-xs font-bold tracking-[0.2em] uppercase hover:bg-champagne transition-all duration-300 disabled:opacity-50 shadow-lg shadow-champagne/10;
+  }
+}
+
+/* Custom form input reset */
+input[type="email"], input[type="password"], input[type="text"], input[type="number"], textarea, select {
+  @apply focus:ring-0 focus:outline-none;
+}
+option { @apply bg-midnight-light text-text-light; }

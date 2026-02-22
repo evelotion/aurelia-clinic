@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum Role {
+  ADMIN
+  DOCTOR
+  PATIENT
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum PaymentStatus {
+  UNPAID
+  DEPOSIT_PAID
+  FULLY_PAID
+  REFUNDED
+}
+
+
+
+model User {
+  id             String    @id @default(cuid())
+  name           String
+  email          String    @unique
+  password       String?  
+  role           Role      @default(PATIENT)
+  phone          String?
+  image          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+ 
+  membershipId   String?
+  membership     MembershipTier? @relation(fields: [membershipId], references: [id])
+  doctorProfile  Doctor?
+  appointments   Appointment[]   @relation("PatientAppointments")
+}
+
+model MembershipTier {
+  id                 String   @id @default(cuid())
+  name               String  
+  discountPercentage Float    @default(0)
+  users              User[]
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  city      String
+  phone     String
+  isActive  Boolean  @default(true)
+
+ 
+  doctors          Doctor[]
+  treatmentPricing TreatmentBranch[]
+}
+
+model Treatment {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  category    String  
+  image       String?
+
+ 
+  pricing     TreatmentBranch[]
+  gallery     BeforeAfterGallery[]
+}
+
+
+model TreatmentBranch {
+  id          String   @id @default(cuid())
+  treatmentId String
+  branchId    String
+  price       Float   
+  durationMin Int     
+  isActive    Boolean  @default(true)
+
+  treatment   Treatment @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
+  branch      Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+
+  @@unique([treatmentId, branchId])
+}
+
+model Doctor {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  branchId       String
+  specialization String
+  bio            String?
+  isActive       Boolean  @default(true)
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch         Branch   @relation(fields: [branchId], references: [id])
+  appointments   Appointment[]
+}
+
+model Appointment {
+  id                String   @id @default(cuid())
+  patientId         String
+  doctorId          String
+  treatmentBranchId String
+  
+ 
+  startTime         DateTime
+  endTime           DateTime
+  status            AppointmentStatus @default(PENDING)
+  paymentStatus     PaymentStatus     @default(UNPAID)
+  
+ 
+  lockedUntil       DateTime? 
+  stripeSessionId   String?   @unique
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  patient           User            @relation("PatientAppointments", fields: [patientId], references: [id])
+  doctor            Doctor          @relation(fields: [doctorId], references: [id])
+  treatmentBranch   TreatmentBranch @relation(fields: [treatmentBranchId], references: [id])
+}
+
+model BeforeAfterGallery {
+  id          String   @id @default(cuid())
+  treatmentId String
+  imageBefore String
+  imageAfter  String
+  showOnWeb   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  treatment   Treatment @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
+}
