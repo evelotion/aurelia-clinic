@@ -1,5 +1,5 @@
-ï»¿"use client";
-import { signIn } from "next-auth/react";
+"use client";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
@@ -22,8 +22,17 @@ export default function LoginForm() {
       setError("Invalid email or password. Please try again."); 
       setLoading(false); 
     } else { 
+      const session = await getSession();
+      
+      if (session?.user?.role === "ADMIN") {
+        router.push("/admin");
+      } else if (session?.user?.role === "DOCTOR") {
+        router.push("/doctor");
+      } else {
+        router.push("/"); // Patient dan role lainnya langsung ke homepage
+      }
+      
       router.refresh(); 
-      router.push("/"); 
     }
   };
 
@@ -50,7 +59,6 @@ export default function LoginForm() {
       <div className="space-y-2 pt-2 group">
         <div className="flex justify-between items-center">
           <label className="premium-label">Password</label>
-          {/* Fitur nyata: Forgot Password (bisa lo kembangin nanti buat kirim email reset) */}
           <Link href="#" className="text-[10px] font-bold text-champagne hover:text-white transition-colors uppercase tracking-widest">
             Forgot?
           </Link>
@@ -61,7 +69,7 @@ export default function LoginForm() {
           onChange={(e) => setPassword(e.target.value)} 
           required 
           className="premium-input" 
-          placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" 
+          placeholder="••••••••" 
         />
       </div>
       
@@ -69,7 +77,6 @@ export default function LoginForm() {
         {loading ? "Authenticating..." : "Sign In Securely"}
       </button>
 
-      {/* Info untuk pasien baru agar tidak kebingungan */}
       <div className="text-center mt-6 pt-6 border-t border-frost-border">
         <p className="text-xs text-text-muted font-light">
           New patient?{" "}
