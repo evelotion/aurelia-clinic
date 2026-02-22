@@ -1,11 +1,9 @@
 "use client";
-import { signIn, getSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
 
 export default function LoginForm() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -22,17 +20,9 @@ export default function LoginForm() {
       setError("Invalid email or password. Please try again."); 
       setLoading(false); 
     } else { 
-      const session = await getSession();
-      
-      if (session?.user?.role === "ADMIN") {
-        router.push("/admin");
-      } else if (session?.user?.role === "DOCTOR") {
-        router.push("/doctor");
-      } else {
-        router.push("/"); // Patient dan role lainnya langsung ke homepage
-      }
-      
-      router.refresh(); 
+      // Force reload ke homepage. 
+      // Nanti Server (Middleware) yang akan otomatis membelokkan user ke /admin, /doctor, dll.
+      window.location.href = "/";
     }
   };
 
