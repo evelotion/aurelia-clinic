@@ -6,7 +6,6 @@ datasource db {
   provider = "postgresql"
 }
 
-
 enum Role {
   ADMIN
   DOCTOR
@@ -28,8 +27,6 @@ enum PaymentStatus {
   REFUNDED
 }
 
-
-
 model User {
   id             String    @id @default(cuid())
   name           String
@@ -41,7 +38,6 @@ model User {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
- 
   membershipId   String?
   membership     MembershipTier? @relation(fields: [membershipId], references: [id])
   doctorProfile  Doctor?
@@ -63,7 +59,6 @@ model Branch {
   phone     String
   isActive  Boolean  @default(true)
 
- 
   doctors          Doctor[]
   treatmentPricing TreatmentBranch[]
 }
@@ -74,12 +69,9 @@ model Treatment {
   description String?
   category    String  
   image       String?
-
- 
   pricing     TreatmentBranch[]
   gallery     BeforeAfterGallery[]
 }
-
 
 model TreatmentBranch {
   id          String   @id @default(cuid())
@@ -115,14 +107,12 @@ model Appointment {
   doctorId          String
   treatmentBranchId String
   
- 
   startTime         DateTime
   endTime           DateTime
   status            AppointmentStatus @default(PENDING)
   paymentStatus     PaymentStatus     @default(UNPAID)
   
- 
-  lockedUntil       DateTime? 
+  lockedUntil       DateTime?
   stripeSessionId   String?   @unique
 
   createdAt         DateTime  @default(now())
