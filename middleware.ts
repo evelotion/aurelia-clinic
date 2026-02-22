@@ -6,7 +6,7 @@ export default withAuth(
     const token = req.nextauth.token;
     const path = req.nextUrl.pathname;
 
-    // Proteksi rute spesifik
+    // 1. Proteksi rute spesifik (Harus login & role sesuai)
     if (path.startsWith("/admin") && token?.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/login", req.url));
     }
@@ -17,30 +17,34 @@ export default withAuth(
       return NextResponse.redirect(new URL("/login", req.url));
     }
 
-    // Jika user SUDAH LOGIN tapi mencoba akses beranda atau halaman login
-    // Maka langsung lempar ke dashboard masing-masing
-    if (path === "/" || path === "/login") {
+    // 2. Jika user SUDAH LOGIN tapi mencoba akses halaman /login
+    if (path === "/login") {
         if (token?.role === "ADMIN") return NextResponse.redirect(new URL("/admin", req.url));
         if (token?.role === "DOCTOR") return NextResponse.redirect(new URL("/doctor", req.url));
-        if (token?.role === "PATIENT") return NextResponse.redirect(new URL("/patient", req.url));
+        if (token?.role === "PATIENT") return NextResponse.redirect(new URL("/", req.url)); // Patient ke landing page
+    }
+
+    // 3. Jika user SUDAH LOGIN dan mencoba akses Beranda ("/")
+    if (path === "/") {
+        // Admin & Doctor langsung dilempar ke dashboard masing-masing
+        if (token?.role === "ADMIN") return NextResponse.redirect(new URL("/admin", req.url));
+        if (token?.role === "DOCTOR") return NextResponse.redirect(new URL("/doctor", req.url));
+        // Untuk PATIENT, biarkan mereka stay di "/" (tidak di-redirect)
     }
   },
   {
     callbacks: {
       authorized: ({ req, token }) => {
         const path = req.nextUrl.pathname;
-        // Wajibkan login HANYA untuk rute dashboard ini
         if (path.startsWith("/admin") || path.startsWith("/doctor") || path.startsWith("/patient")) {
           return !!token;
         }
-        // Izinkan tamu (belum login) untuk mengakses rute lainnya (termasuk "/" dan "/login")
         return true; 
       },
     },
   }
 );
 
-// Tambahkan "/" dan "/login" ke matcher agar middleware ikut memantaunya
 export const config = {
   matcher: ["/admin/:path*", "/doctor/:path*", "/patient/:path*", "/", "/login"],
 };
