@@ -1,11 +1,10 @@
 ﻿@import "tailwindcss";
 
 @theme {
-  /* Mapping Font Baru */
-  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
   
-  /* Palet Warna Midnight Luxury Baru */
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
+  
   --color-midnight: #0A0A0F;
   --color-midnight-light: #151520;
   --color-champagne: #E3C699;
@@ -22,7 +21,6 @@
   }
 }
 
-/* Utility Class untuk Standarisasi Glass Component */
 @layer components {
   .premium-glass {
     @apply bg-frost backdrop-blur-xl border border-frost-border shadow-[0_8px_32px_0_rgba(0,0,0,0.5)];
@@ -41,7 +39,6 @@
   }
 }
 
-/* Custom form input reset */
 input[type="email"], input[type="password"], input[type="text"], input[type="number"], textarea, select {
   @apply focus:ring-0 focus:outline-none;
 }

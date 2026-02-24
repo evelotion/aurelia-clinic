@@ -12,7 +12,7 @@ export async function createAppointment(formData: FormData) {
 
   const data = Object.fromEntries(formData.entries());
   const parsed = bookingSchema.safeParse(data);
-  // CHEAT CODE: Pakai 'as any' biar Vercel nggak banyak protes
+ 
   if (!parsed.success) return { error: (parsed.error as any).errors[0].message };
 
   try {

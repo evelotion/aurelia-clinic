@@ -17,7 +17,7 @@ export default function CheckoutButton({ appointmentId }: { appointmentId: strin
       const data = await res.json();
       
       if (data.url) {
-        // Redirect user ke halaman aman Stripe
+       
         window.location.href = data.url;
       }
     } catch (error) {

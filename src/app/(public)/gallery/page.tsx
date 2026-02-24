@@ -1,8 +1,9 @@
 ﻿import { prisma } from "@/lib/prisma";
-import Link from "next/link";
+import Image from "next/image";
+
+export const revalidate = 60;
 
 export default async function GalleryPage() {
-  // Narik data tambahan dari database (kalau admin udah upload)
   const galleries = await prisma.beforeAfterGallery.findMany({
     where: { showOnWeb: true },
     include: { treatment: true },
@@ -10,103 +11,59 @@ export default async function GalleryPage() {
   });
 
   return (
-    <div className="flex flex-col min-h-screen pt-32 pb-20 bg-midnight relative overflow-hidden">
-      {/* Background Ornamen */}
-      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-champagne/5 to-transparent pointer-events-none"></div>
-
-      {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-6 w-full text-center mb-24 relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif text-champagne mb-6 tracking-widest leading-tight">
-          The Art of <br /> <span className="italic text-white">Transformation</span>
-        </h1>
-        <p className="text-text-muted max-w-2xl mx-auto font-light leading-relaxed">
-          Real results. Masterful precision. Explore our curated gallery of patient transformations, showcasing the profound impact of our bespoke aesthetic treatments.
-        </p>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 w-full space-y-32 relative z-10">
+    <main className="min-h-screen bg-midnight pt-32 pb-24 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-20">
+          <span className="text-champagne tracking-[0.4em] text-xs font-bold uppercase mb-4 block">
+            Real Results
+          </span>
+          <h1 className="text-5xl md:text-6xl font-serif text-white mb-6">Patient <span className="text-champagne italic">Gallery</span></h1>
+          <p className="text-text-muted max-w-2xl mx-auto font-light leading-relaxed">
+            Witness the transformative power of our bespoke treatments. Authentic results from our valued patients.
+          </p>
+        </div>
         
-        {/* FEATURED TRANSFORMATION (Menggunakan gambar lokal yang lo siapkan) */}
-        <div className="animate-in fade-in duration-1000 delay-150">
-          <div className="text-center mb-12">
-            <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-champagne mb-4">Featured Result</h2>
-            <h3 className="text-3xl font-serif text-white">Signature Anti-Aging Profile</h3>
-          </div>
-          
-          <div className="premium-glass p-6 md:p-10 rounded-[2.5rem] lg:rounded-[3rem] border border-champagne/20 shadow-2xl shadow-champagne/5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-              {/* Gambar BEFORE */}
-              <div className="relative group overflow-hidden rounded-2xl">
-                <div className="absolute top-4 left-4 z-10 bg-midnight/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">Before</span>
-                </div>
-                <img 
-                  src="/images/gallery-before.jpg" 
-                  alt="Patient Before Treatment" 
-                  className="w-full h-[400px] md:h-[600px] object-cover object-center group-hover:scale-105 transition-transform duration-700 grayscale-[20%]"
-                />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {galleries.map((gallery) => (
+            <div key={gallery.id} className="premium-glass p-6 md:p-8 rounded-2xl group border border-frost-border hover:border-champagne/30 transition-colors">
+              <div className="flex items-center justify-between mb-8 pb-4 border-b border-frost-border">
+                <h3 className="text-2xl font-serif text-white group-hover:text-champagne transition-colors">
+                  {gallery.treatment?.name || "Signature Treatment"}
+                </h3>
+                <span className="text-[10px] tracking-[0.2em] uppercase text-text-muted hidden sm:block">Verified Result</span>
               </div>
               
-              {/* Gambar AFTER */}
-              <div className="relative group overflow-hidden rounded-2xl">
-                <div className="absolute top-4 right-4 z-10 bg-champagne/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-midnight">After 12 Weeks</span>
+              <div className="flex flex-col sm:flex-row gap-4 h-auto sm:h-[350px]">
+                {/* BEFORE */}
+                <div className="relative w-full sm:w-1/2 h-[250px] sm:h-full rounded-xl overflow-hidden">
+                  <Image 
+                    src={gallery.imageBefore} 
+                    alt={`Before - ${gallery.treatment?.name}`}
+                    fill
+                    className="object-cover grayscale-[20%]"
+                  />
+                  <div className="absolute top-4 left-4 premium-glass px-4 py-2 rounded-full backdrop-blur-md border border-white/10">
+                    <span className="text-white text-[10px] font-bold tracking-[0.2em] uppercase">Before</span>
+                  </div>
                 </div>
-                <img 
-                  src="/images/gallery-after.jpg" 
-                  alt="Patient After Treatment" 
-                  className="w-full h-[400px] md:h-[600px] object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                />
+
+                {/* AFTER */}
+                <div className="relative w-full sm:w-1/2 h-[250px] sm:h-full rounded-xl overflow-hidden shadow-[0_0_30px_rgba(227,198,153,0.1)]">
+                  <Image 
+                    src={gallery.imageAfter} 
+                    alt={`After - ${gallery.treatment?.name}`}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute top-4 right-4 bg-champagne/90 px-4 py-2 rounded-full backdrop-blur-md shadow-lg">
+                    <span className="text-midnight text-[10px] font-bold tracking-[0.2em] uppercase">After</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* DATABASE RESULTS (Akan muncul otomatis jika Admin nambahin gambar via Dashboard) */}
-        {galleries.length > 0 && (
-          <div>
-            <div className="flex items-center gap-6 mb-16">
-              <h2 className="text-2xl font-serif text-white tracking-widest uppercase">Client Archives</h2>
-              <div className="flex-1 h-px bg-frost-border"></div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-              {galleries.map((gallery) => (
-                <div key={gallery.id} className="premium-glass p-6 rounded-3xl group">
-                  <div className="flex justify-between items-center mb-6 px-2">
-                    <h3 className="text-lg font-serif text-champagne tracking-wide">{gallery.treatment.name}</h3>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="relative overflow-hidden rounded-xl">
-                      <div className="absolute top-2 left-2 z-10 bg-midnight/70 backdrop-blur-sm px-3 py-1 rounded-full"><span className="text-[8px] font-bold uppercase tracking-widest text-text-muted">Before</span></div>
-                      <img src={gallery.imageBefore} alt="Before" className="w-full h-64 object-cover grayscale-[20%]" />
-                    </div>
-                    <div className="relative overflow-hidden rounded-xl">
-                      <div className="absolute top-2 right-2 z-10 bg-champagne/80 backdrop-blur-sm px-3 py-1 rounded-full"><span className="text-[8px] font-bold uppercase tracking-widest text-midnight">After</span></div>
-                      <img src={gallery.imageAfter} alt="After" className="w-full h-64 object-cover" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-      </div>
-      
-      {/* Bottom CTA Section */}
-      <div className="max-w-4xl mx-auto px-6 w-full text-center mt-32 relative z-10">
-        <div className="border-t border-frost-border pt-20">
-          <h2 className="text-3xl md:text-4xl font-serif text-white mb-6">Envision Your Results</h2>
-          <p className="text-text-muted mb-10 font-light max-w-md mx-auto">
-            Every transformation begins with a conversation. Book your bespoke consultation today.
-          </p>
-          <Link href="/login" className="premium-button inline-block">
-            Secure Your Consultation
-          </Link>
+          ))}
         </div>
       </div>
-
-    </div>
+    </main>
   );
 }

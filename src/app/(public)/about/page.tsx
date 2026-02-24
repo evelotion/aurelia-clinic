@@ -6,7 +6,7 @@ export default function AboutPage() {
     <main className="relative overflow-hidden bg-midnight">
       <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/20 to-transparent z-40 pointer-events-none"></div>
 
-      {/* SECTION 1: HERO STORY */}
+      {}
       <section className="container mx-auto px-6 md:px-12 pt-40 pb-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="relative z-10">
@@ -26,7 +26,7 @@ export default function AboutPage() {
           </div>
           <div className="relative">
             <div className="aspect-[4/5] overflow-hidden shadow-2xl rounded-2xl">
-              {/* MENGGUNAKAN clinic-lobby.jpg DI SINI */}
+              {}
               <img 
                 src="/images/clinic-lobby.jpg" 
                 alt="Luxury Clinic Interior" 
@@ -38,13 +38,13 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* SECTION 2: TREATMENT ROOM TEASER */}
+      {}
       <section className="py-20 bg-midnight-light relative border-y border-frost-border">
          <div className="container mx-auto px-6 md:px-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div className="order-2 lg:order-1 relative">
                     <div className="aspect-video overflow-hidden rounded-2xl shadow-2xl border border-frost-border">
-                      {/* MENGGUNAKAN treatment-room.jpg DI SINI */}
+                      {}
                       <img 
                         src="/images/treatment-room.jpg" 
                         alt="State of the art treatment room" 
@@ -62,7 +62,7 @@ export default function AboutPage() {
          </div>
       </section>
 
-      {/* SECTION 3: THE PHILOSOPHY */}
+      {}
       <section className="bg-midnight py-32 text-white relative">
         <div className="container mx-auto px-6 md:px-12">
           <div className="text-center max-w-3xl mx-auto mb-20">
@@ -99,7 +99,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* SECTION 4: CALL TO ACTION */}
+      {}
       <section className="container mx-auto px-6 py-32 text-center">
         <div className="max-w-4xl mx-auto premium-glass p-12 md:p-20 rounded-[3rem]">
           <Heart className="text-champagne mx-auto mb-6" size={32} />

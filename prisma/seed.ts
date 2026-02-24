@@ -5,7 +5,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
-  throw new Error("Waduh bro, DATABASE_URL di .env lo belum keisi!");
+  throw new Error("Error: DATABASE_URL environment variable is missing in your .env file.");
 }
 
 const pool = new Pool({ connectionString });
@@ -13,9 +13,9 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log("🌱 Memulai proses seeding database Aurelia Clinic...");
+  console.log("🌱 Starting database seeding for Aurelia Clinic...");
 
-  // 1. CLEAR DATA LAMA (Hapus dari child terdalam ke parent biar gak error relasi)
+ 
   await prisma.beforeAfterGallery.deleteMany();
   await prisma.appointment.deleteMany();
   await prisma.treatmentBranch.deleteMany();
@@ -25,11 +25,11 @@ async function main() {
   await prisma.user.deleteMany();
   await prisma.membershipTier.deleteMany();
 
-  // 2. SETUP MEMBERSHIP TIERS
+ 
   const gold = await prisma.membershipTier.create({ data: { name: "Gold VIP", discountPercentage: 20 } });
   const silver = await prisma.membershipTier.create({ data: { name: "Silver", discountPercentage: 10 } });
 
-  // 3. SETUP BRANCHES (CABANG)
+ 
   const senopati = await prisma.branch.create({
     data: { name: "Aurelia Senopati", address: "Jl. Senopati No. 88", city: "Jakarta Selatan", phone: "+62811223344", isActive: true }
   });
@@ -37,7 +37,7 @@ async function main() {
     data: { name: "Aurelia Menteng", address: "Jl. Menteng Raya No. 12", city: "Jakarta Pusat", phone: "+62811556677", isActive: true }
   });
 
-  // 4. SETUP TREATMENTS (LAYANAN)
+ 
   const picoLaser = await prisma.treatment.create({
     data: { 
       name: "PicoSure Pro Laser", 
@@ -55,7 +55,7 @@ async function main() {
     }
   });
 
-  // 5. SETUP PRICING & DURATION (TREATMENT BRANCH)
+ 
   const tbPicoSenopati = await prisma.treatmentBranch.create({
     data: { treatmentId: picoLaser.id, branchId: senopati.id, price: 4500000, durationMin: 45, isActive: true }
   });
@@ -66,15 +66,15 @@ async function main() {
     data: { treatmentId: thermage.id, branchId: senopati.id, price: 12000000, durationMin: 90, isActive: true }
   });
 
-  // 6. SETUP USERS & DOCTORS
+ 
   const hashedPassword = await bcrypt.hash("password123", 10);
 
-  // -- Admin
+ 
   await prisma.user.create({
     data: { name: "Super Admin", email: "admin@aurelia.com", password: hashedPassword, role: "ADMIN" }
   });
 
-  // -- Doctor 1 (Senopati)
+ 
   const drAlexUser = await prisma.user.create({
     data: { name: "Dr. Alexander Pierce", email: "dr.alex@aurelia.com", password: hashedPassword, role: "DOCTOR", image: "/images/doctor-portrait.jpg" }
   });
@@ -82,7 +82,7 @@ async function main() {
     data: { userId: drAlexUser.id, branchId: senopati.id, specialization: "Aesthetic Medicine", bio: "Certified in Beverly Hills with 15+ years experience.", isActive: true }
   });
 
-  // -- Doctor 2 (Menteng)
+ 
   const drNadiaUser = await prisma.user.create({
     data: { name: "Dr. Nadia Larasati, Sp.KK", email: "dr.nadia@aurelia.com", password: hashedPassword, role: "DOCTOR", image: "/images/doctor-portrait.jpg" }
   });
@@ -90,12 +90,12 @@ async function main() {
     data: { userId: drNadiaUser.id, branchId: menteng.id, specialization: "Dermatology", bio: "Top dermatologist specializing in anti-aging.", isActive: true }
   });
 
-  // -- Patient VIP
+ 
   const patientJessica = await prisma.user.create({
     data: { name: "Jessica Mila", email: "patient@demo.com", password: hashedPassword, role: "PATIENT", membershipId: gold.id, phone: "081299887766" }
   });
 
-  // 7. SETUP BEFORE & AFTER GALLERY
+ 
   await prisma.beforeAfterGallery.create({
     data: {
       treatmentId: picoLaser.id,
@@ -105,11 +105,11 @@ async function main() {
     }
   });
 
-  // 8. SETUP APPOINTMENTS (JADWAL DUMMY REALISTIS)
+ 
   const now = new Date();
   
-  // -- Booking Masa Lalu (Selesai Treatment)
-  const pastDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // 7 Hari Lalu
+ 
+  const pastDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   await prisma.appointment.create({
     data: {
       patientId: patientJessica.id,
@@ -122,8 +122,8 @@ async function main() {
     }
   });
 
-  // -- Booking Masa Depan (Sudah Dibayar/Confirmed)
-  const futureDate1 = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000); // 2 Hari Kedepan
+ 
+  const futureDate1 = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
   await prisma.appointment.create({
     data: {
       patientId: patientJessica.id,
@@ -136,8 +136,8 @@ async function main() {
     }
   });
 
-  // -- Booking Baru (Masih Unpaid/Pending)
-  const futureDate2 = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000); // 5 Hari Kedepan
+ 
+  const futureDate2 = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
   await prisma.appointment.create({
     data: {
       patientId: patientJessica.id,

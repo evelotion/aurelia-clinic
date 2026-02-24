@@ -1,7 +1,8 @@
-"use client";
-import { signIn } from "next-auth/react";
+ï»¿"use client";
+import { signIn, getSession } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
+
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -14,15 +15,26 @@ export default function LoginForm() {
     setLoading(true); 
     setError("");
     
+   
     const res = await signIn("credentials", { redirect: false, email, password });
     
     if (res?.error) { 
       setError("Invalid email or password. Please try again."); 
       setLoading(false); 
     } else { 
-      // Force reload ke homepage. 
-      // Nanti Server (Middleware) yang akan otomatis membelokkan user ke /admin, /doctor, dll.
-      window.location.href = "/";
+     
+      const session = await getSession();
+      const userRole = session?.user?.role;
+
+     
+     
+      if (userRole === "ADMIN") {
+        window.location.href = "/admin";
+      } else if (userRole === "DOCTOR") {
+        window.location.href = "/doctor";
+      } else {
+        window.location.href = "/";
+      }
     }
   };
 
@@ -59,7 +71,7 @@ export default function LoginForm() {
           onChange={(e) => setPassword(e.target.value)} 
           required 
           className="premium-input" 
-          placeholder="••••••••" 
+          placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" 
         />
       </div>
       

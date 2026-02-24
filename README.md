@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aurelia Clinic - Premium Beauty Clinic Management System
 
-## Getting Started
+Welcome to Aurelia Clinic! This is a modern, full-stack web application built with Next.js 14, designed specifically for beauty clinics to manage appointments, treatments, doctors, galleries, and patient records seamlessly.
 
-First, run the development server:
+## 🚀 Tech Stack
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Database:** PostgreSQL with Prisma ORM
+- **Styling:** Tailwind CSS & Framer Motion
+- **Authentication:** NextAuth.js (Role-Based Access Control)
+- **Payment Gateway:** Midtrans Snap API
+- **Media Storage:** Cloudinary
 
+---
+
+## 📋 Prerequisites
+Before you begin, ensure you have the following installed and set up:
+1. **Node.js** (v18.17 or higher)
+2. **PostgreSQL Database** (You can use local Postgres, Supabase, Neon, etc.)
+3. **Midtrans Account** (For payment gateway integration)
+4. **Cloudinary Account** (For uploading before-after gallery and treatment images)
+5. **Gmail/SMTP Account** (For sending email notifications)
+
+---
+
+## 🛠️ Installation Guide
+
+Follow these steps to get your project up and running locally:
+
+### 1. Extract the Files
+Extract the downloaded ZIP file and open the folder in your terminal or code editor (like VSCode).
+
+### 2. Install Dependencies
+Run the following command to install all required packages:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
+### 3. Setup Environment Variables
+Duplicate the .env.example file and rename it to .env. Fill in all the required variables:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **DATABASE_URL:** Your PostgreSQL connection string.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **NEXTAUTH_SECRET:** Generate a random string (e.g., using openssl rand -base64 32).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **MIDTRANS_SERVER_KEY:** Get this from your Midtrans Dashboard (Settings -> Access Keys).
 
-## Learn More
+- **CLOUDINARY:** Fill in your Cloud Name, API Key, and API Secret from the Cloudinary Dashboard.
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Setup the Database
+Run the following command to push the database schema to your PostgreSQL database:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```Bash
+npx prisma db push
+```
+### 5. Seed the Database (Optional but Recommended)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To populate your database with initial dummy data (Admin account, treatments, dummy branches, etc.), run:
 
-## Deploy on Vercel
+```Bash
+npx prisma db seed
+```
+Note: The default Admin login is admin@aurelia.com / password123.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 6. Run the Development Server
+Start the application by running:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```Bash
+npm run dev
+```
+Open http://localhost:3000 with your browser to see the result.
+
+---
+
+## ✨ Core Features
+
+### 👤 Patient Portal
+Browse clinic branches and available treatments.
+
+- View the Before-After portfolio gallery.
+
+- Book appointments using the smart Scheduling Engine (prevents double booking).
+
+- Seamless checkout process via Midtrans Payment Gateway.
+
+### 👨‍⚕️ Doctor Portal
+Dedicated dashboard for doctors.
+
+View daily schedules and assigned patients.
+
+### 👑 Admin Dashboard
+- **Master Data Management:** Manage branches, doctors, and treatments.
+
+- **Dynamic Pricing:** Set different prices and durations for treatments based on the branch location.
+
+- **Gallery Management:** Upload and manage Before-After photos.
+
+- **Appointment Management:** Monitor all incoming bookings and payment statuses.
+
+### 🌍 Deployment
+The easiest way to deploy this Next.js app is to use the Vercel Platform.
+
+1. Push your code to a GitHub repository.
+
+2. Import the project into Vercel.
+
+3. Add all the environment variables from your .env file into the Vercel project settings.
+
+4. Click Deploy.

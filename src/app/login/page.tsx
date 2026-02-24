@@ -30,8 +30,12 @@ export default function LoginPage() {
         setError("Invalid credentials. Please try again.");
         setIsLoading(false);
       } else {
-        router.refresh();
-        router.push("/");
+       
+       
+       
+       
+        
+        window.location.href = "/";
       }
     } catch (err) {
       setError("An error occurred during login.");
@@ -42,10 +46,10 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex relative overflow-hidden bg-midnight font-sans text-text-light selection:bg-champagne selection:text-midnight">
       
-      {/* LEFT PANEL - Editorial Image */}
+      {}
       <div className="hidden lg:flex lg:w-[55%] relative items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          {/* PERUBAHAN: Menggunakan gambar lokal dari folder public/images */}
+          {}
           <img 
             src="/images/login-bg.jpg" 
             alt="Aurelia Editorial" 
@@ -73,7 +77,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* RIGHT PANEL - Minimalist Form */}
+      {}
       <div className="w-full lg:w-[45%] flex flex-col justify-center px-8 sm:px-16 md:px-24 xl:px-32 bg-midnight relative z-10 lg:border-l lg:border-frost-border shadow-2xl">
         
         <div className="lg:hidden mb-12 text-center">
