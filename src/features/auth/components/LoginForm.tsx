@@ -82,10 +82,10 @@ export default function LoginForm() {
       <div className="text-center mt-6 pt-6 border-t border-frost-border">
         <p className="text-xs text-text-muted font-light">
           New patient?{" "}
-          <Link href="/contact" className="text-champagne font-semibold hover:text-white transition-colors">
-            Contact our clinic
-          </Link>
-          {" "}to register.
+<Link href="/register" className="text-champagne font-semibold hover:text-white transition-colors border-b border-transparent hover:border-champagne pb-0.5">
+  Register here
+</Link>
+{" "}to create an account.
         </p>
       </div>
     </form>

@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { treatmentSchema } from "../schemas/treatment-schema";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function getTreatments() {
   return await prisma.treatment.findMany({
@@ -11,6 +13,9 @@ export async function getTreatments() {
 }
 
 export async function createTreatment(formData: FormData) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== "ADMIN") return { error: "Unauthorized access." };
+
   const data = Object.fromEntries(formData.entries());
   const parsed = treatmentSchema.safeParse(data);
   
@@ -34,6 +39,9 @@ export async function createTreatment(formData: FormData) {
 }
 
 export async function deleteTreatment(id: string) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== "ADMIN") return { error: "Unauthorized access." };
+
   try {
     await prisma.treatment.delete({
       where: { id }

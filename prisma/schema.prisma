@@ -28,20 +28,21 @@ enum PaymentStatus {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  name           String
-  email          String    @unique
-  password       String?  
-  role           Role      @default(PATIENT)
-  phone          String?
-  image          String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified DateTime? // Tambahan untuk fitur verifikasi email
+  password      String?  
+  role          Role      @default(PATIENT)
+  phone         String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  membershipId   String?
-  membership     MembershipTier? @relation(fields: [membershipId], references: [id])
-  doctorProfile  Doctor?
-  appointments   Appointment[]   @relation("PatientAppointments")
+  membershipId  String?
+  membership    MembershipTier? @relation(fields: [membershipId], references: [id])
+  doctorProfile Doctor?
+  appointments  Appointment[]   @relation("PatientAppointments")
 }
 
 model MembershipTier {
@@ -52,12 +53,12 @@ model MembershipTier {
 }
 
 model Branch {
-  id        String   @id @default(cuid())
-  name      String
-  address   String
-  city      String
-  phone     String
-  isActive  Boolean  @default(true)
+  id       String   @id @default(cuid())
+  name     String
+  address  String
+  city     String
+  phone    String
+  isActive Boolean  @default(true)
 
   doctors          Doctor[]
   treatmentPricing TreatmentBranch[]
@@ -81,8 +82,8 @@ model TreatmentBranch {
   durationMin Int     
   isActive    Boolean  @default(true)
 
-  treatment   Treatment @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
-  branch      Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  treatment    Treatment     @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
+  branch       Branch        @relation(fields: [branchId], references: [id], onDelete: Cascade)
   appointments Appointment[]
 
   @@unique([treatmentId, branchId])
@@ -96,9 +97,9 @@ model Doctor {
   bio            String?
   isActive       Boolean  @default(true)
 
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  branch         Branch   @relation(fields: [branchId], references: [id])
-  appointments   Appointment[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch       Branch        @relation(fields: [branchId], references: [id])
+  appointments Appointment[]
 }
 
 model Appointment {
@@ -113,14 +114,17 @@ model Appointment {
   paymentStatus     PaymentStatus     @default(UNPAID)
   
   lockedUntil       DateTime?
-  stripeSessionId   String?   @unique
+  stripeSessionId   String?           @unique
+  
+  // Catatan medis dokter, di postgresql "String" sudah otomatis menjadi tipe text
+  medicalNotes      String?
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
-  patient           User            @relation("PatientAppointments", fields: [patientId], references: [id])
-  doctor            Doctor          @relation(fields: [doctorId], references: [id])
-  treatmentBranch   TreatmentBranch @relation(fields: [treatmentBranchId], references: [id])
+  patient         User            @relation("PatientAppointments", fields: [patientId], references: [id])
+  doctor          Doctor          @relation(fields: [doctorId], references: [id])
+  treatmentBranch TreatmentBranch @relation(fields: [treatmentBranchId], references: [id])
 }
 
 model BeforeAfterGallery {
@@ -132,4 +136,13 @@ model BeforeAfterGallery {
   createdAt   DateTime @default(now())
 
   treatment   Treatment @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
+}
+
+// Tambahan model untuk menyimpan token verifikasi email Register
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }

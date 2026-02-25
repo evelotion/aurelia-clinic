@@ -1,8 +1,13 @@
 ﻿"use server";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function createGallery(formData: FormData) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== "ADMIN") return { error: "Unauthorized access." };
+
   try {
     const treatmentId = formData.get("treatmentId") as string;
     const imageBefore = formData.get("imageBefore") as string;

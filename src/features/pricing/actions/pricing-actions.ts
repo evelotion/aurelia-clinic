@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { pricingSchema } from "../schemas/pricing-schema";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function getPricings() {
   return await prisma.treatmentBranch.findMany({
@@ -18,6 +20,9 @@ export async function getPricings() {
 }
 
 export async function createPricing(formData: FormData) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== "ADMIN") return { error: "Unauthorized access." };
+
   const data = Object.fromEntries(formData.entries());
   const parsed = pricingSchema.safeParse(data);
   
@@ -43,6 +48,9 @@ export async function createPricing(formData: FormData) {
 }
 
 export async function deletePricing(id: string) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== "ADMIN") return { error: "Unauthorized access." };
+
   try {
     await prisma.treatmentBranch.delete({ where: { id } });
     revalidatePath("/admin/pricing");

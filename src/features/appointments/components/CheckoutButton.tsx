@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
+import { CreditCard } from "lucide-react";
 
 export default function CheckoutButton({ appointmentId }: { appointmentId: string }) {
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,7 @@ export default function CheckoutButton({ appointmentId }: { appointmentId: strin
       const data = await res.json();
       
       if (data.url) {
-       
+        // Akan ngebuka link internal (/patient/checkout) atau eksternal (Midtrans) otomatis
         window.location.href = data.url;
       }
     } catch (error) {
@@ -32,8 +33,9 @@ export default function CheckoutButton({ appointmentId }: { appointmentId: strin
     <button 
       onClick={handleCheckout} 
       disabled={loading}
-      className="px-4 py-2 bg-champagne text-midnight text-[10px] font-bold uppercase tracking-widest rounded-lg hover:bg-champagne-hover transition-colors shadow-md shadow-champagne/20 disabled:opacity-50"
+      className="w-full py-2.5 rounded-xl border border-champagne/30 text-champagne text-[10px] font-bold uppercase tracking-widest hover:bg-champagne hover:text-midnight transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
     >
+      <CreditCard size={14} />
       {loading ? "Redirecting..." : "Pay Now"}
     </button>
   );

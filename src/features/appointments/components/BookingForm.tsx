@@ -1,7 +1,7 @@
 ﻿"use client";
-import { useState, useTransition, useMemo } from "react";
+import { useState, useTransition, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createAppointment } from "../actions/appointment-actions";
+import { createAppointment, getAvailableSlots } from "../actions/appointment-actions"; // Pastikan import getAvailableSlots
 
 type BookingData = {
   branches: any[];
@@ -15,6 +15,12 @@ export default function BookingForm({ data }: { data: BookingData }) {
   const [error, setError] = useState("");
 
   const [selectedBranch, setSelectedBranch] = useState("");
+  const [selectedDoctor, setSelectedDoctor] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  
+  // State untuk menyimpan jam yang dinamis
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
   const availableTreatments = useMemo(() => {
     if (!selectedBranch) return [];
@@ -25,6 +31,21 @@ export default function BookingForm({ data }: { data: BookingData }) {
     if (!selectedBranch) return [];
     return data.doctors.filter((d) => d.branchId === selectedBranch);
   }, [selectedBranch, data.doctors]);
+
+  // Efek untuk memanggil jam kosong ketika dokter dan tanggal sudah diisi
+  useEffect(() => {
+    if (selectedDoctor && selectedDate) {
+      setIsLoadingSlots(true);
+      getAvailableSlots(selectedDoctor, selectedDate).then((slots) => {
+        setAvailableTimeSlots(slots);
+        setIsLoadingSlots(false);
+      }).catch(() => {
+        setIsLoadingSlots(false);
+      });
+    } else {
+      setAvailableTimeSlots([]);
+    }
+  }, [selectedDoctor, selectedDate]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,8 +59,6 @@ export default function BookingForm({ data }: { data: BookingData }) {
     });
   };
 
-  const timeSlots = ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
-
   return (
     <form onSubmit={handleSubmit} className="space-y-8 premium-glass p-10 rounded-3xl">
       {error && <div className="p-4 text-sm text-red-200 bg-red-900/30 backdrop-blur-md border-l-2 border-red-500 rounded-r-md">{error}</div>}
@@ -51,7 +70,11 @@ export default function BookingForm({ data }: { data: BookingData }) {
             name="branchId" 
             required 
             value={selectedBranch}
-            onChange={(e) => setSelectedBranch(e.target.value)}
+            onChange={(e) => {
+              setSelectedBranch(e.target.value);
+              setSelectedDoctor(""); // Reset dokter jika cabang ganti
+              setSelectedDate("");
+            }}
             className="premium-input appearance-none bg-midnight-light"
           >
             <option value="" disabled>Choose clinic branch...</option>
@@ -73,10 +96,16 @@ export default function BookingForm({ data }: { data: BookingData }) {
 
         <div className="space-y-2 group">
           <label className="premium-label">3. Select Doctor</label>
-          <select name="doctorId" required defaultValue="" disabled={!selectedBranch} className="premium-input appearance-none bg-midnight-light disabled:opacity-50">
+          <select 
+            name="doctorId" 
+            required 
+            value={selectedDoctor}
+            onChange={(e) => setSelectedDoctor(e.target.value)}
+            disabled={!selectedBranch} 
+            className="premium-input appearance-none bg-midnight-light disabled:opacity-50"
+          >
             <option value="" disabled>Choose attending doctor...</option>
             {availableDoctors.map(d => (
-              
               <option key={d.id} value={d.id}>{d.user.name} ({d.specialization})</option>
             ))}
           </select>
@@ -84,21 +113,40 @@ export default function BookingForm({ data }: { data: BookingData }) {
 
         <div className="space-y-2 group">
           <label className="premium-label">4. Select Date</label>
-          <input type="date" name="appointmentDate" required min={new Date().toISOString().split('T')[0]} className="premium-input [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert" />
+          <input 
+            type="date" 
+            name="appointmentDate" 
+            required 
+            min={new Date().toISOString().split('T')[0]} 
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            disabled={!selectedDoctor}
+            className="premium-input [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert disabled:opacity-50" 
+          />
         </div>
 
         <div className="space-y-2 group">
           <label className="premium-label">5. Select Time</label>
-          <select name="appointmentTime" required defaultValue="" className="premium-input appearance-none bg-midnight-light">
-            <option value="" disabled>Choose available slot...</option>
-            {timeSlots.map(time => <option key={time} value={time}>{time}</option>)}
+          <select 
+            name="appointmentTime" 
+            required 
+            defaultValue="" 
+            disabled={!selectedDate || isLoadingSlots || availableTimeSlots.length === 0} 
+            className="premium-input appearance-none bg-midnight-light disabled:opacity-50"
+          >
+            <option value="" disabled>
+              {isLoadingSlots ? "Loading slots..." : availableTimeSlots.length === 0 && selectedDate ? "No slots available" : "Choose available slot..."}
+            </option>
+            {availableTimeSlots.map(time => <option key={time} value={time}>{time}</option>)}
           </select>
         </div>
       </div>
 
       <div className="pt-8 flex justify-end gap-4 border-t border-frost-border mt-8">
         <button type="button" onClick={() => router.back()} className="px-6 py-3 text-xs font-bold tracking-[0.2em] uppercase text-text-muted hover:text-text-light transition-colors">Cancel</button>
-        <button type="submit" disabled={isPending || !selectedBranch} className="premium-button">{isPending ? "Processing..." : "Confirm Booking"}</button>
+        <button type="submit" disabled={isPending || !selectedBranch || availableTimeSlots.length === 0} className="premium-button">
+          {isPending ? "Processing..." : "Confirm Booking"}
+        </button>
       </div>
     </form>
   );

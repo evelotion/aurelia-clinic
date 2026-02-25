@@ -1,31 +1,16 @@
 ﻿import { FileText, Download, CheckCircle2, Clock } from "lucide-react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getPatientAppointments } from "@/features/appointments/actions/appointment-actions";
+import { format } from "date-fns";
+import { redirect } from "next/navigation";
 
-export default function PatientInvoicesPage() {
-  // Data statis sementara (Dummy Data) untuk ngelihat UI-nya.
-  // Nanti bisa diganti pakai fetch dari prisma.appointment atau prisma.invoice
-  const invoices = [
-    {
-      id: "INV-202602-001",
-      date: "20 Feb 2026",
-      treatment: "Skin Rejuvenation Laser",
-      amount: "Rp 3.500.000",
-      status: "PAID",
-    },
-    {
-      id: "INV-202601-042",
-      date: "15 Jan 2026",
-      treatment: "Premium Dermal Fillers",
-      amount: "Rp 5.200.000",
-      status: "PAID",
-    },
-    {
-      id: "INV-202603-010",
-      date: "01 Mar 2026",
-      treatment: "Aesthetic Wellness IV",
-      amount: "Rp 1.800.000",
-      status: "UNPAID",
-    }
-  ];
+export default async function PatientInvoicesPage() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) redirect("/login");
+
+  // Tarik data asli dari database
+  const appointments = await getPatientAppointments(session.user.id);
 
   return (
     <div className="min-h-screen bg-midnight text-text-light p-6 md:p-10">
@@ -57,36 +42,55 @@ export default function PatientInvoicesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-frost-border">
-                {invoices.map((inv) => (
-                  <tr key={inv.id} className="hover:bg-white/[0.02] transition-colors group">
-                    <td className="py-5 px-6 font-mono text-sm text-white">{inv.id}</td>
-                    <td className="py-5 px-6 text-sm text-text-muted">{inv.date}</td>
-                    <td className="py-5 px-6 text-sm text-white">{inv.treatment}</td>
-                    <td className="py-5 px-6 text-sm font-medium text-champagne">{inv.amount}</td>
-                    <td className="py-5 px-6">
-                      {inv.status === "PAID" ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold tracking-wider">
-                          <CheckCircle2 className="w-3 h-3" /> PAID
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold tracking-wider">
-                          <Clock className="w-3 h-3" /> UNPAID
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-5 px-6 text-right">
-                      <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-frost-border hover:border-champagne/50 hover:bg-champagne/10 text-champagne transition-all text-[10px] font-bold uppercase tracking-[0.1em]">
-                        <Download className="w-3 h-3" /> PDF
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {appointments.map((apt) => {
+                  const isPaid = apt.paymentStatus === "FULLY_PAID";
+                  
+                  return (
+                    <tr key={apt.id} className="hover:bg-white/[0.02] transition-colors group">
+                      <td className="py-5 px-6 font-mono text-xs text-white">
+                        {/* Bikin ID Invoice dinamis dari ID Appointment */}
+                        INV-{format(new Date(apt.createdAt), "yyyyMM")}-{apt.id.substring(apt.id.length - 4).toUpperCase()}
+                      </td>
+                      <td className="py-5 px-6 text-sm text-text-muted">
+                        {format(new Date(apt.createdAt), "dd MMM yyyy")}
+                      </td>
+                      <td className="py-5 px-6 text-sm text-white">
+                        {apt.treatmentBranch.treatment.name}
+                      </td>
+                      <td className="py-5 px-6 text-sm font-medium text-champagne">
+                        Rp {apt.treatmentBranch.price.toLocaleString("id-ID")}
+                      </td>
+                      <td className="py-5 px-6">
+                        {isPaid ? (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold tracking-wider">
+                            <CheckCircle2 className="w-3 h-3" /> PAID
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold tracking-wider">
+                            <Clock className="w-3 h-3" /> {apt.paymentStatus}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-5 px-6 text-right">
+                        <button 
+                          disabled={!isPaid}
+                          className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border text-[10px] font-bold uppercase tracking-[0.1em] transition-all
+                            ${isPaid 
+                              ? "border-frost-border hover:border-champagne/50 hover:bg-champagne/10 text-champagne" 
+                              : "border-white/5 bg-white/5 text-text-muted/50 cursor-not-allowed"}`}
+                        >
+                          <Download className="w-3 h-3" /> PDF
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
           
           {/* EMPTY STATE */}
-          {invoices.length === 0 && (
+          {appointments.length === 0 && (
             <div className="py-20 text-center flex flex-col items-center">
               <FileText className="w-12 h-12 text-frost-border mb-4" />
               <p className="text-text-muted text-sm">No invoices found for your account.</p>

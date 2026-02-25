@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { branchSchema } from "../schemas/branch-schema";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function getBranches() {
   return await prisma.branch.findMany({
@@ -11,6 +13,9 @@ export async function getBranches() {
 }
 
 export async function createBranch(formData: FormData) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== "ADMIN") return { error: "Unauthorized access." };
+
   const data = Object.fromEntries(formData.entries());
   const parsed = branchSchema.safeParse(data);
   
@@ -30,6 +35,9 @@ export async function createBranch(formData: FormData) {
 }
 
 export async function deleteBranch(id: string) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || session.user.role !== "ADMIN") return { error: "Unauthorized access." };
+
   try {
     await prisma.branch.delete({
       where: { id }

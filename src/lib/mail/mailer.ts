@@ -41,3 +41,36 @@ export const sendBookingConfirmation = async (
     console.error("Failed to send email via Nodemailer:", error);
   }
 };
+
+export const sendVerificationEmail = async (
+  email: string,
+  token: string,
+  name: string
+) => {
+  try {
+    // Pastikan lo udah set NEXT_PUBLIC_APP_URL di .env lo (contoh: http://localhost:3000)
+    const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify?token=${token}&email=${email}`;
+    
+    const info = await transporter.sendMail({
+      from: `"Aurelia Clinic" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: "Aurelia Clinic - Verify Your Account ✨",
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333; padding: 20px;">
+          <h2 style="color: #d4af37; text-align: center;">AURELIA CLINIC</h2>
+          <p>Dear ${name},</p>
+          <p>Welcome to Aurelia Clinic. To complete your registration and secure your account, please verify your email address by clicking the button below:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${confirmLink}" style="background-color: #d4af37; color: #000; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; font-size: 12px;">Verify Email</a>
+          </div>
+          <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
+          <p style="font-size: 12px; word-break: break-all; color: #666;">${confirmLink}</p>
+          <p style="margin-top: 30px;">Best Regards,<br/>The Aurelia Team</p>
+        </div>
+      `,
+    });
+    console.log(`Verification email sent to ${email}. ID: ${info.messageId}`);
+  } catch (error) {
+    console.error("Failed to send verification email:", error);
+  }
+};

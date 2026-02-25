@@ -2,9 +2,9 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getPatientAppointments } from "@/features/appointments/actions/appointment-actions";
+import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import CheckoutButton from "@/features/appointments/components/CheckoutButton";
-import LogoutButton from "@/components/ui/LogoutButton";
 import { 
   CalendarDays, 
   Clock, 
@@ -12,48 +12,108 @@ import {
   User as UserIcon, 
   CreditCard, 
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Crown
 } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default async function PatientDashboard() {
   const session = await getServerSession(authOptions);
-  const appointments = await getPatientAppointments(session?.user?.id || "");
-  const userName = session?.user?.name || "Guest";
-  const userInitials = userName.charAt(0).toUpperCase();
+  if (!session?.user) redirect("/login");
+
+  // Tarik data riwayat reservasi
+  const appointments = await getPatientAppointments(session.user.id);
+  const userName = session.user.name || "Guest";
+
+  // Tarik data user spesifik beserta relasi tier membership-nya
+  const userData = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    include: { membership: true }
+  });
+
+  // Tentukan default value jika pasien belum punya membership khusus
+  const tierName = userData?.membership?.name || "STANDARD";
+  const discount = userData?.membership?.discountPercentage || 0;
+
+  // Logika warna kartu dinamis berdasarkan nama Tier
+  const getCardStyle = (tier: string) => {
+    const tierUpper = tier.toUpperCase();
+    if (tierUpper.includes('GOLD')) {
+      return {
+        wrapper: "bg-gradient-to-br from-champagne/20 via-midnight to-champagne/5 border-champagne/40 shadow-[0_0_30px_rgba(212,175,55,0.15)]",
+        text: "text-champagne drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]",
+        icon: "text-champagne"
+      };
+    }
+    if (tierUpper.includes('SILVER')) {
+      return {
+        wrapper: "bg-gradient-to-br from-slate-300/20 via-midnight to-slate-400/5 border-slate-300/40 shadow-[0_0_30px_rgba(203,213,225,0.1)]",
+        text: "text-slate-200 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]",
+        icon: "text-slate-300"
+      };
+    }
+    // Default / Standard
+    return {
+      wrapper: "bg-gradient-to-br from-white/10 via-midnight to-white/5 border-white/10",
+      text: "text-white",
+      icon: "text-text-muted"
+    };
+  };
+
+  const cardStyle = getCardStyle(tierName);
 
   return (
     <div className="space-y-10 animate-in fade-in duration-700 pb-10">
-      {/* HEADER YANG SUDAH DI-MIX (Ada Avatar & Logout) */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 border-b border-white/10 pb-6">
+      
+      {/* HEADER */}
+      <div className="flex justify-between items-end border-b border-white/10 pb-6">
         <div>
           <p className="text-[10px] font-bold text-champagne uppercase tracking-[0.3em] mb-2 flex items-center gap-2">
             <Sparkles size={12} /> Client Portal
           </p>
-          <h1 className="text-3xl md:text-4xl font-serif text-white">
+          <h1 className="text-3xl md:text-4xl font-serif text-text-light">
             Welcome back, <span className="text-champagne">{userName.split(' ')[0]}</span>
           </h1>
         </div>
-        
-        {/* Info Box (Date, Avatar, Logout) */}
-        <div className="flex items-center gap-4 bg-white/5 backdrop-blur-md border border-white/5 px-4 py-2.5 rounded-2xl shadow-sm">
-            <div className="text-xs text-text-muted uppercase tracking-widest font-medium pr-4 border-r border-white/10 hidden sm:block">
-                {format(new Date(), "dd MMM yyyy")}
-            </div>
-            
-            <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-champagne/10 border border-champagne/30 flex items-center justify-center text-champagne font-serif text-sm shadow-[0_0_10px_rgba(212,175,55,0.2)]">
-                  {userInitials}
-                </div>
-                <div className="w-px h-5 bg-white/10"></div>
-                <LogoutButton />
-            </div>
+        <div className="text-xs text-text-muted uppercase tracking-widest font-bold hidden sm:block">
+            {format(new Date(), 'EEEE, d MMMM yyyy')}
         </div>
       </div>
 
-      {/* Content Section */}
+      {/* MEMBERSHIP CARD SECTION */}
+      <div className="max-w-md">
+        <div className={`relative overflow-hidden rounded-2xl p-7 border transition-all duration-500 hover:scale-[1.02] ${cardStyle.wrapper}`}>
+          {/* Efek kilauan kaca di latar belakang */}
+          <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
+          
+          <div className="flex justify-between items-start relative z-10">
+            <div>
+                <p className="text-[9px] uppercase tracking-[0.3em] text-text-muted mb-1">Aurelia Membership</p>
+                <h3 className={`text-2xl font-serif tracking-wider ${cardStyle.text}`}>
+                  {tierName.toUpperCase()}
+                </h3>
+            </div>
+            <Crown className={`${cardStyle.icon} opacity-80`} size={28} strokeWidth={1.5} />
+          </div>
+
+          <div className="mt-10 flex justify-between items-end relative z-10">
+            <div>
+                <p className="text-[8px] uppercase tracking-[0.2em] text-text-muted/70 mb-1">Card Holder</p>
+                <p className="text-sm tracking-[0.2em] text-white font-medium uppercase">{userName}</p>
+            </div>
+            <div className="text-right">
+                <p className="text-[8px] uppercase tracking-[0.2em] text-text-muted/70 mb-1">Privilege</p>
+                <p className="text-sm text-emerald-400 font-bold tracking-wider">{discount}% OFF</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* CONTENT SECTION (APPOINTMENTS) */}
       {appointments.length === 0 ? (
         <div className="relative overflow-hidden bg-white/5 backdrop-blur-xl p-10 rounded-3xl border border-white/10 shadow-2xl flex flex-col items-center text-center max-w-2xl mx-auto mt-12 group">
-          <div className="absolute inset-0 bg-gradient-to-b from-champagne/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-champagne/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
           
           <div className="w-16 h-16 bg-champagne/10 rounded-full flex items-center justify-center mb-6 border border-champagne/20 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
             <Sparkles className="text-champagne" size={28} />
@@ -82,7 +142,6 @@ export default async function PatientDashboard() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {appointments.map((apt) => {
-                // Konfigurasi warna status dinamis
                 const statusColors = {
                   PENDING: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.2)]",
                   CONFIRMED: "bg-blue-400/10 text-blue-400 border-blue-400/20 shadow-[0_0_10px_rgba(96,165,250,0.2)]",
@@ -94,11 +153,9 @@ export default async function PatientDashboard() {
 
                 return (
                   <div key={apt.id} className="bg-white/5 backdrop-blur-xl p-6 rounded-3xl border border-white/10 hover:border-white/20 transition-all duration-500 group relative flex flex-col justify-between h-full">
-                      {/* Glow effect saat di-hover */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
 
                       <div>
-                        {/* Header Card: Tanggal & Status */}
                         <div className="flex justify-between items-start mb-5 border-b border-white/5 pb-4">
                             <div className="flex items-center gap-4">
                                 <div className="bg-white/5 p-3 rounded-2xl border border-white/5 flex flex-col items-center justify-center min-w-[60px]">
@@ -120,7 +177,6 @@ export default async function PatientDashboard() {
                             </span>
                         </div>
                         
-                        {/* Body Card: Detail */}
                         <div className="space-y-3 mb-6">
                             <div className="flex items-center gap-3 text-sm text-text-muted font-light">
                                 <MapPin size={16} className="text-white/40" />
@@ -141,7 +197,6 @@ export default async function PatientDashboard() {
                         </div>
                       </div>
                       
-                      {/* Footer Card: Action Button */}
                       {apt.paymentStatus === "UNPAID" && apt.status !== "CANCELLED" && (
                           <div className="mt-auto pt-4 border-t border-white/5">
                             <CheckoutButton appointmentId={apt.id} />

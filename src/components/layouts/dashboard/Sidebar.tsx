@@ -12,6 +12,7 @@ import {
   Clock,
   FileText
 } from "lucide-react";
+import LogoutButton from "@/components/ui/LogoutButton"; // Tambahkan import ini
 
 export default function Sidebar({ role }: { role: string }) {
   const pathname = usePathname();
@@ -19,11 +20,13 @@ export default function Sidebar({ role }: { role: string }) {
   const menus = {
     ADMIN: [
       { name: "Overview", path: "/admin", icon: LayoutDashboard },
+      { name: "Finance & Report", path: "/admin/finance", icon: FileText },
+      { name: "Patients", path: "/admin/patients", icon: Users },
+      { name: "Doctors", path: "/admin/doctors", icon: Users },
       { name: "Appointments", path: "/admin/appointments", icon: CalendarDays },
       { name: "Branches", path: "/admin/branches", icon: MapPin },
       { name: "Treatments", path: "/admin/treatments", icon: Syringe },
       { name: "Pricing", path: "/admin/pricing", icon: CircleDollarSign },
-      { name: "Doctors", path: "/admin/doctors", icon: Users },
       { name: "Gallery", path: "/admin/gallery", icon: ImageIcon },
     ],
     DOCTOR: [
@@ -40,7 +43,6 @@ export default function Sidebar({ role }: { role: string }) {
   const activeMenu = menus[role as keyof typeof menus] || [];
 
   return (
-    // Efek utama Glassmorphism ada di class wrapper <aside> ini
     <aside className="w-72 bg-midnight-light/30 backdrop-blur-2xl text-text-light min-h-screen flex flex-col border-r border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] z-20">
       <div className="h-28 flex flex-col items-center justify-center relative mb-4">
         <div className="absolute inset-0 bg-champagne/10 blur-[30px] rounded-full scale-75"></div>
@@ -77,7 +79,6 @@ export default function Sidebar({ role }: { role: string }) {
               href={item.path}
               className={`relative px-4 py-3.5 rounded-xl text-sm font-medium tracking-wide transition-all duration-300 flex items-center gap-4 group overflow-hidden ${
                 isActive 
-                  // Efek glassmorphism pada tombol yang aktif
                   ? "text-champagne bg-white/10 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] backdrop-blur-md" 
                   : "text-text-muted hover:bg-white/5 hover:text-text-light hover:border hover:border-white/5 border border-transparent"
               }`}
@@ -98,6 +99,11 @@ export default function Sidebar({ role }: { role: string }) {
           );
         })}
       </nav>
+
+      {/* Tambahan Logout Button di bawah */}
+      <div className="p-4 border-t border-white/10 mt-auto">
+        <LogoutButton />
+      </div>
     </aside>
   );
 }
