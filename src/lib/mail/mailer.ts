@@ -48,7 +48,7 @@ export const sendVerificationEmail = async (
   name: string
 ) => {
   try {
-    // Pastikan lo udah set NEXT_PUBLIC_APP_URL di .env lo (contoh: http://localhost:3000)
+   
     const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify?token=${token}&email=${email}`;
     
     const info = await transporter.sendMail({

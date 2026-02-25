@@ -9,14 +9,14 @@ export default async function PatientInvoicesPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect("/login");
 
-  // Tarik data asli dari database
+ 
   const appointments = await getPatientAppointments(session.user.id);
 
   return (
     <div className="min-h-screen bg-midnight text-text-light p-6 md:p-10">
       <div className="max-w-5xl mx-auto">
         
-        {/* HEADER SECTION */}
+        {}
         <div className="mb-12">
           <span className="text-champagne tracking-[0.2em] text-[10px] font-bold uppercase mb-2 block">
             Billing & Payments
@@ -27,7 +27,7 @@ export default async function PatientInvoicesPage() {
           </p>
         </div>
 
-        {/* TABLE SECTION */}
+        {}
         <div className="premium-glass rounded-2xl overflow-hidden border border-frost-border">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[800px]">
@@ -48,7 +48,7 @@ export default async function PatientInvoicesPage() {
                   return (
                     <tr key={apt.id} className="hover:bg-white/[0.02] transition-colors group">
                       <td className="py-5 px-6 font-mono text-xs text-white">
-                        {/* Bikin ID Invoice dinamis dari ID Appointment */}
+                        {}
                         INV-{format(new Date(apt.createdAt), "yyyyMM")}-{apt.id.substring(apt.id.length - 4).toUpperCase()}
                       </td>
                       <td className="py-5 px-6 text-sm text-text-muted">
@@ -89,7 +89,7 @@ export default async function PatientInvoicesPage() {
             </table>
           </div>
           
-          {/* EMPTY STATE */}
+          {}
           {appointments.length === 0 && (
             <div className="py-20 text-center flex flex-col items-center">
               <FileText className="w-12 h-12 text-frost-border mb-4" />

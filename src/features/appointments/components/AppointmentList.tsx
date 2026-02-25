@@ -4,12 +4,12 @@ import { useTransition, useState, useRef, useEffect } from "react";
 import { updateAppointmentStatus } from "../actions/appointment-actions";
 import { useRouter } from "next/navigation";
 
-// --- CUSTOM PREMIUM DROPDOWN COMPONENT ---
+
 const StatusDropdown = ({ 
   status, 
   onStatusChange, 
   disabled,
-  isLocked = false // Tambahan prop untuk mengunci status
+  isLocked = false
 }: { 
   status: string; 
   onStatusChange: (status: string) => void; 
@@ -43,10 +43,10 @@ const StatusDropdown = ({
     <div className="relative inline-flex flex-col items-end text-right" ref={dropdownRef}>
       <button
         type="button"
-        // Cegah menu terbuka kalau sedang isLocked atau disabled
+       
         onClick={() => !disabled && !isLocked && setIsOpen(!isOpen)}
         disabled={disabled}
-        // Styling disesuaikan: kalau dilock cursor jadi default dan hover effect dimatikan
+       
         className={`flex items-center justify-end gap-2 px-3 py-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-300 rounded-lg border border-transparent 
           ${isLocked ? 'cursor-default' : 'hover:border-frost-border hover:bg-frost cursor-pointer'} 
           ${disabled && !isLocked ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -54,7 +54,7 @@ const StatusDropdown = ({
         <span className={current.textColor}>{current.label}</span>
         <span className={`w-1.5 h-1.5 rounded-full ${current.dotColor} shadow-[0_0_5px_currentColor] opacity-80`}></span>
         
-        {/* Render panah dropdown HANYA jika status tidak terkunci */}
+        {}
         {!isLocked && (
           <svg 
             className={`w-3 h-3 text-text-muted transition-transform duration-300 ml-1 ${isOpen ? 'rotate-180' : ''}`} 
@@ -89,7 +89,7 @@ const StatusDropdown = ({
     </div>
   );
 };
-// ------------------------------------------
+
 
 export default function AppointmentList({ appointments, role }: { appointments: any[], role: "ADMIN" | "DOCTOR" }) {
   const [isPending, startTransition] = useTransition();
@@ -120,9 +120,9 @@ export default function AppointmentList({ appointments, role }: { appointments: 
         </thead>
         <tbody className="divide-y divide-frost-border bg-transparent">
           {appointments.map((apt) => {
-            // Kita tentukan status mana saja yang dianggap "Fixed/Terkunci"
-            // Di sini gue masukin COMPLETED dan CANCELLED sekalian, 
-            // karena logikanya kalau udah batal juga gak bisa diubah lagi.
+           
+           
+           
             const isStatusLocked = apt.status === 'COMPLETED' || apt.status === 'CANCELLED';
 
             return (

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-// Tambahan ArrowLeft di sini
+
 import { Sparkles, Loader2, ArrowRight, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -67,10 +67,10 @@ export default function RegisterPage() {
   };
 
   return (
-    // Hilangkan overflow-hidden di <main> supaya browser bisa scroll alami
+   
     <main className="min-h-screen flex bg-midnight font-sans text-text-light selection:bg-champagne selection:text-midnight">
       
-      {/* Kiri - Form Section */}
+      {}
       <div className="w-full lg:w-[50%] flex flex-col justify-center px-8 sm:px-16 md:px-24 xl:px-32 bg-midnight relative z-10 lg:border-r lg:border-frost-border shadow-2xl py-16 min-h-screen">
         
         <div className="lg:hidden mb-12 text-center mt-6">
@@ -84,7 +84,7 @@ export default function RegisterPage() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="w-full max-w-md mx-auto lg:mx-0 my-auto"
         >
-          {/* --- TOMBOL BACK TO HOME DITAMBAHKAN DI SINI --- */}
+          {}
           <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold text-text-muted hover:text-champagne transition-colors tracking-widest uppercase mb-6 lg:mb-8 mt-4 lg:mt-0">
             <ArrowLeft size={14} />
             Back to Home
@@ -194,7 +194,7 @@ export default function RegisterPage() {
         </motion.div>
       </div>
 
-      {/* Kanan - Image Section */}
+      {}
       <div className="hidden lg:flex lg:w-[50%] sticky top-0 h-screen items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 

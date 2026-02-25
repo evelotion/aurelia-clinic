@@ -12,7 +12,7 @@ import {
   Clock,
   FileText
 } from "lucide-react";
-import LogoutButton from "@/components/ui/LogoutButton"; // Tambahkan import ini
+import LogoutButton from "@/components/ui/LogoutButton";
 
 export default function Sidebar({ role }: { role: string }) {
   const pathname = usePathname();
@@ -100,7 +100,7 @@ export default function Sidebar({ role }: { role: string }) {
         })}
       </nav>
 
-      {/* Tambahan Logout Button di bawah */}
+      {}
       <div className="p-4 border-t border-white/10 mt-auto">
         <LogoutButton />
       </div>

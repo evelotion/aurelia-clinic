@@ -43,7 +43,7 @@ export default async function AdminPatientsPage() {
                   patients.map((patient) => (
                     <tr key={patient.id} className="hover:bg-white/[0.02] transition-colors group">
                       
-                      {/* Patient Name & Initials */}
+                      {}
                       <td className="py-4 px-6">
                          <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-champagne/10 border border-champagne/30 flex items-center justify-center text-champagne font-serif text-sm">
@@ -55,7 +55,7 @@ export default async function AdminPatientsPage() {
                          </div>
                       </td>
 
-                      {/* Contact Info */}
+                      {}
                       <td className="py-4 px-6 space-y-1.5">
                          <div className="flex items-center gap-2 text-xs text-text-muted">
                             <Mail size={12} className="text-champagne/70" /> {patient.email}
@@ -65,20 +65,20 @@ export default async function AdminPatientsPage() {
                          </div>
                       </td>
 
-                      {/* Joined Date */}
+                      {}
                       <td className="py-4 px-6 text-sm text-text-muted flex items-center gap-2 mt-2">
                          <CalendarDays size={14} className="text-white/40" />
                          {format(new Date(patient.createdAt), "dd MMM yyyy")}
                       </td>
 
-                      {/* Total Appointments */}
+                      {}
                       <td className="py-4 px-6 text-center">
                          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-white">
                             {patient._count.appointments}
                          </span>
                       </td>
 
-                      {/* Membership Tier */}
+                      {}
                       <td className="py-4 px-6 text-right">
                          {patient.membership ? (
                             <span className="inline-block px-3 py-1 rounded-full bg-champagne/20 border border-champagne/30 text-champagne text-[10px] font-bold uppercase tracking-wider">

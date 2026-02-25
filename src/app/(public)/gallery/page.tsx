@@ -34,7 +34,7 @@ export default async function GalleryPage() {
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4 h-auto sm:h-[350px]">
-                {/* BEFORE */}
+                {}
                 <div className="relative w-full sm:w-1/2 h-[250px] sm:h-full rounded-xl overflow-hidden">
                   <Image 
                     src={gallery.imageBefore} 
@@ -47,7 +47,7 @@ export default async function GalleryPage() {
                   </div>
                 </div>
 
-                {/* AFTER */}
+                {}
                 <div className="relative w-full sm:w-1/2 h-[250px] sm:h-full rounded-xl overflow-hidden shadow-[0_0_30px_rgba(227,198,153,0.1)]">
                   <Image 
                     src={gallery.imageAfter} 

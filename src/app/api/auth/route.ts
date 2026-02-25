@@ -18,13 +18,13 @@ export async function GET(req: Request) {
     return NextResponse.redirect(new URL("/login?error=TokenExpired", req.url));
   }
 
-  // Update user jadi terverifikasi
+ 
   await prisma.user.update({
     where: { email },
     data: { emailVerified: new Date() },
   });
 
-  // Hapus token yang sudah dipakai
+ 
   await prisma.verificationToken.delete({
     where: { token: existingToken.token },
   });

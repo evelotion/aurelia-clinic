@@ -31,7 +31,7 @@ model User {
   id            String    @id @default(cuid())
   name          String
   email         String    @unique
-  emailVerified DateTime? // Tambahan untuk fitur verifikasi email
+  emailVerified DateTime?
   password      String?  
   role          Role      @default(PATIENT)
   phone         String?
@@ -116,7 +116,7 @@ model Appointment {
   lockedUntil       DateTime?
   stripeSessionId   String?           @unique
   
-  // Catatan medis dokter, di postgresql "String" sudah otomatis menjadi tipe text
+ 
   medicalNotes      String?
 
   createdAt         DateTime  @default(now())
@@ -138,7 +138,7 @@ model BeforeAfterGallery {
   treatment   Treatment @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
 }
 
-// Tambahan model untuk menyimpan token verifikasi email Register
+
 model VerificationToken {
   identifier String
   token      String   @unique

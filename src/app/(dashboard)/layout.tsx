@@ -8,8 +8,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!session?.user) redirect("/login");
 
   return (
-    <div className="flex min-h-screen font-sans relative">
-      <div className="fixed inset-0 z-0">
+    // 1. KUNCI UTAMA: Ganti min-h-screen jadi h-screen dan tambah overflow-hidden
+    <div className="flex h-screen w-full font-sans relative overflow-hidden bg-midnight">
+      
+      {/* 2. Ubah fixed jadi absolute biar nempel statis di container ini */}
+      <div className="absolute inset-0 z-0">
         <img 
           src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=2500&auto=format&fit=crop" 
           alt="Abstract Dark Background" 
@@ -18,10 +21,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="absolute inset-0 bg-midnight/90 backdrop-blur-[1px]"></div>
       </div>
 
-      <div className="relative z-10 flex w-full">
+      {/* 3. Tambahkan h-full untuk menyesuaikan ukuran persis dengan layar */}
+      <div className="relative z-10 flex w-full h-full">
         <Sidebar role={session.user.role} />
-        <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        
+        <div className="flex-1 flex flex-col h-full overflow-hidden">
           {/* Header udah kita copot dari sini biar ga menuh-menuhin layar */}
+          
+          {/* 4. Area ini yang SEKARANG jadi satu-satunya yang bisa di-scroll */}
           <main className="flex-1 p-8 overflow-y-auto scrollbar-thin scrollbar-thumb-frost-border scrollbar-track-transparent">
             {children}
           </main>

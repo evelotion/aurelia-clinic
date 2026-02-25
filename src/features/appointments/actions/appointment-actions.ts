@@ -100,12 +100,12 @@ export async function updateAppointmentStatus(appointmentId: string, newStatus: 
 }
 
 export async function getAvailableSlots(doctorId: string, date: string) {
-  // Parsing tanggal yang dipilih pasien
+ 
   const targetDate = new Date(date);
   const startOfDay = new Date(targetDate.setHours(0, 0, 0, 0));
   const endOfDay = new Date(targetDate.setHours(23, 59, 59, 999));
 
-  // Tarik jadwal dokter yang sudah ada (kecuali yang di-cancel)
+ 
   const existingAppointments = await prisma.appointment.findMany({
     where: {
       doctorId,
@@ -115,18 +115,18 @@ export async function getAvailableSlots(doctorId: string, date: string) {
     select: { startTime: true, endTime: true }
   });
 
-  // Jam operasional klinik (Bisa disesuaikan nanti)
+ 
   const allSlots = ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
 
-  // Filter jam yang bertabrakan dengan jadwal existing
+ 
   const availableSlots = allSlots.filter(slot => {
     const [hours, minutes] = slot.split(':');
     const slotTime = new Date(date);
     slotTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
 
-    // Cek apakah jam ini sudah dipakai
+   
     const isBooked = existingAppointments.some(apt => {
-      // Kita anggap 1 slot memakan waktu dari startTime sampai tepat sebelum endTime
+     
       return slotTime >= apt.startTime && slotTime < apt.endTime;
     });
 

@@ -7,22 +7,22 @@ import Link from "next/link";
 import { Sparkles, Loader2, ArrowRight, CheckCircle2, AlertCircle, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
-// --- KOMPONEN UTAMA LOGIN ---
+
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  // Menangkap parameter dari URL (hasil redirect verifikasi email)
+ 
   const isVerified = searchParams.get("verified") === "true";
   const urlError = searchParams.get("error");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State untuk toggle mata
+  const [showPassword, setShowPassword] = useState(false);
   const [formError, setFormError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Menerjemahkan tipe error dari URL menjadi pesan yang elegan
+ 
   let verificationError = "";
   if (urlError === "InvalidVerificationLink") {
     verificationError = "Invalid or corrupted verification link. Please ensure you copied the entire URL.";
@@ -46,7 +46,7 @@ function LoginContent() {
         setFormError("Invalid credentials. Please try again.");
         setIsLoading(false);
       } else {
-        // Redirect ke home setelah sukses login
+       
         window.location.href = "/";
       }
     } catch (err) {
@@ -58,7 +58,7 @@ function LoginContent() {
   return (
     <main className="min-h-screen flex relative overflow-hidden bg-midnight font-sans text-text-light selection:bg-champagne selection:text-midnight">
       
-      {/* Kiri - Bagian Gambar Banner */}
+      {}
       <div className="hidden lg:flex lg:w-[55%] relative items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
@@ -88,7 +88,7 @@ function LoginContent() {
         </div>
       </div>
 
-      {/* Kanan - Bagian Form Login */}
+      {}
       <div className="w-full lg:w-[45%] flex flex-col justify-center px-8 sm:px-16 md:px-24 xl:px-32 bg-midnight relative z-10 lg:border-l lg:border-frost-border shadow-2xl">
         
         <div className="lg:hidden mb-12 text-center">
@@ -102,7 +102,7 @@ function LoginContent() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="w-full max-w-md mx-auto lg:mx-0"
         >
-          {/* Tombol Back to Home */}
+          {}
           <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold text-text-muted hover:text-champagne transition-colors tracking-widest uppercase mb-8 lg:mb-12">
             <ArrowLeft size={14} />
             Back to Home
@@ -116,7 +116,7 @@ function LoginContent() {
             <p className="text-text-muted text-sm font-light">Sign in to access your secure dashboard.</p>
           </div>
 
-          {/* --- BANNER NOTIFIKASI VERIFIKASI --- */}
+          {}
           {isVerified && (
             <div className="p-4 mb-6 text-sm text-green-200 bg-green-900/30 backdrop-blur-md border-l-2 border-green-500 rounded-r-md flex items-start gap-3">
               <CheckCircle2 className="text-green-500 shrink-0 mt-0.5" size={18} />
@@ -130,7 +130,7 @@ function LoginContent() {
               <p>{verificationError}</p>
             </div>
           )}
-          {/* ---------------------------------- */}
+          {}
 
           {formError && (
             <div className="p-4 mb-8 text-sm text-red-200 bg-red-900/30 backdrop-blur-md border-l-2 border-red-500 rounded-r-md flex items-start gap-3">
@@ -160,7 +160,7 @@ function LoginContent() {
                 </Link>
               </div>
               
-              {/* Input Password dengan Tombol Mata */}
+              {}
               <div className="relative">
                 <input 
                   type={showPassword ? "text" : "password"} 
@@ -211,10 +211,10 @@ function LoginContent() {
   );
 }
 
-// --- WRAPPER SUSPENSE ---
+
 export default function LoginPage() {
   return (
-    // Fallback loading state sementara searchParams sedang dievaluasi Next.js
+   
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-midnight text-champagne">
         <Loader2 className="animate-spin" size={32} />

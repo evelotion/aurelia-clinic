@@ -21,21 +21,21 @@ export default async function PatientDashboard() {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect("/login");
 
-  // Tarik data riwayat reservasi
+ 
   const appointments = await getPatientAppointments(session.user.id);
   const userName = session.user.name || "Guest";
 
-  // Tarik data user spesifik beserta relasi tier membership-nya
+ 
   const userData = await prisma.user.findUnique({
     where: { id: session.user.id },
     include: { membership: true }
   });
 
-  // Tentukan default value jika pasien belum punya membership khusus
+ 
   const tierName = userData?.membership?.name || "STANDARD";
   const discount = userData?.membership?.discountPercentage || 0;
 
-  // Logika warna kartu dinamis berdasarkan nama Tier
+ 
   const getCardStyle = (tier: string) => {
     const tierUpper = tier.toUpperCase();
     if (tierUpper.includes('GOLD')) {
@@ -52,7 +52,7 @@ export default async function PatientDashboard() {
         icon: "text-slate-300"
       };
     }
-    // Default / Standard
+   
     return {
       wrapper: "bg-gradient-to-br from-white/10 via-midnight to-white/5 border-white/10",
       text: "text-white",
@@ -65,7 +65,7 @@ export default async function PatientDashboard() {
   return (
     <div className="space-y-10 animate-in fade-in duration-700 pb-10">
       
-      {/* HEADER */}
+      {}
       <div className="flex justify-between items-end border-b border-white/10 pb-6">
         <div>
           <p className="text-[10px] font-bold text-champagne uppercase tracking-[0.3em] mb-2 flex items-center gap-2">
@@ -80,10 +80,10 @@ export default async function PatientDashboard() {
         </div>
       </div>
 
-      {/* MEMBERSHIP CARD SECTION */}
+      {}
       <div className="max-w-md">
         <div className={`relative overflow-hidden rounded-2xl p-7 border transition-all duration-500 hover:scale-[1.02] ${cardStyle.wrapper}`}>
-          {/* Efek kilauan kaca di latar belakang */}
+          {}
           <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none"></div>
           
@@ -110,7 +110,7 @@ export default async function PatientDashboard() {
         </div>
       </div>
 
-      {/* CONTENT SECTION (APPOINTMENTS) */}
+      {}
       {appointments.length === 0 ? (
         <div className="relative overflow-hidden bg-white/5 backdrop-blur-xl p-10 rounded-3xl border border-white/10 shadow-2xl flex flex-col items-center text-center max-w-2xl mx-auto mt-12 group">
           <div className="absolute inset-0 bg-gradient-to-b from-champagne/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>

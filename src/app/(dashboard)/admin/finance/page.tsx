@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import DownloadReportButton from "./DownloadReportButton";
 
 export default async function AdminFinancePage() {
-  // Ambil semua transaksi yang statusnya FULLY_PAID
+ 
   const paidAppointments = await prisma.appointment.findMany({
     where: { paymentStatus: 'FULLY_PAID' },
     include: {
@@ -18,7 +18,7 @@ export default async function AdminFinancePage() {
 
   const totalRevenue = paidAppointments.reduce((sum, apt) => sum + apt.treatmentBranch.price, 0);
 
-  // Format data secara datar (flat) agar aman dikirim ke Client Component
+ 
   const reportData = paidAppointments.map(apt => ({
     date: format(new Date(apt.updatedAt), "dd MMM yyyy HH:mm"),
     patient: apt.patient.name,
@@ -34,7 +34,7 @@ export default async function AdminFinancePage() {
             <h1 className="text-3xl font-serif text-text-light mb-2">Finance & Reports</h1>
             <p className="text-text-muted text-sm font-light">Monitor all validated payments from Midtrans.</p>
             
-            {/* Tombol Download CSV ditaruh di sini */}
+            {}
             {reportData.length > 0 && (
               <DownloadReportButton data={reportData} />
             )}

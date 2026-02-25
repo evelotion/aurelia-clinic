@@ -18,7 +18,7 @@ export default function CheckoutButton({ appointmentId }: { appointmentId: strin
       const data = await res.json();
       
       if (data.url) {
-        // Akan ngebuka link internal (/patient/checkout) atau eksternal (Midtrans) otomatis
+       
         window.location.href = data.url;
       }
     } catch (error) {

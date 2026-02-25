@@ -6,17 +6,17 @@ import { revalidatePath } from "next/cache";
 import { ShieldCheck, CreditCard, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-// 1. UPDATE: params sekarang adalah Promise
+
 export default async function CheckoutSimulationPage({ params }: { params: Promise<{ id: string }> }) {
-  // 2. UPDATE: Await params-nya dulu buat ngambil ID-nya
+ 
   const { id } = await params;
 
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect("/login");
 
-  // Tarik data appointment beserta data treatment dan membership pasien
+ 
   const appointment = await prisma.appointment.findUnique({
-    where: { id: id }, // 3. UPDATE: Pakai variabel id yang udah di-await
+    where: { id: id },
     include: {
       treatmentBranch: { include: { treatment: true, branch: true } },
       patient: { include: { membership: true } }
@@ -26,27 +26,27 @@ export default async function CheckoutSimulationPage({ params }: { params: Promi
   if (!appointment || appointment.patientId !== session.user.id) redirect("/patient");
   if (appointment.paymentStatus === "FULLY_PAID") redirect("/patient/invoices");
 
-  // LOGIKA DISKON MEMBERSHIP
+ 
   const basePrice = appointment.treatmentBranch.price;
   const discountPercent = appointment.patient.membership?.discountPercentage || 0;
   const discountAmount = basePrice * (discountPercent / 100);
   const finalPrice = basePrice - discountAmount;
 
-  // Server Action untuk memproses pembayaran simulasi
+ 
   async function processDummyPayment() {
     "use server";
     
     await prisma.appointment.update({
-      where: { id: id }, // 4. UPDATE: pakai id yang udah di-await di sini juga
+      where: { id: id },
       data: { paymentStatus: "FULLY_PAID" }
     });
 
-    // Refresh data di semua halaman yang berhubungan
+   
     revalidatePath("/patient");
     revalidatePath("/patient/invoices");
     revalidatePath("/admin/finance");
     
-    // Lempar pasien ke halaman invoice setelah bayar
+   
     redirect("/patient/invoices");
   }
 
@@ -59,7 +59,7 @@ export default async function CheckoutSimulationPage({ params }: { params: Promi
       </div>
 
       <div className="premium-glass p-8 md:p-12 rounded-3xl border border-white/10 relative overflow-hidden">
-        {/* Latar Belakang Glassmorphism */}
+        {}
         <div className="absolute top-0 right-0 w-64 h-64 bg-champagne/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
 
         <div className="text-center mb-10 relative z-10">
@@ -71,7 +71,7 @@ export default async function CheckoutSimulationPage({ params }: { params: Promi
         </div>
 
         <div className="space-y-6 relative z-10">
-            {/* Rincian Pesanan */}
+            {}
             <div className="bg-white/5 p-6 rounded-2xl border border-white/5 space-y-4">
                 <div className="flex justify-between items-start">
                     <div>
@@ -85,7 +85,7 @@ export default async function CheckoutSimulationPage({ params }: { params: Promi
                     </div>
                 </div>
 
-                {/* Potongan Diskon (Hanya Muncul Jika Punya Tier Member) */}
+                {}
                 {discountPercent > 0 && (
                   <div className="flex justify-between items-center pt-4 border-t border-white/10">
                       <div>
@@ -100,7 +100,7 @@ export default async function CheckoutSimulationPage({ params }: { params: Promi
                 )}
             </div>
 
-            {/* Total Akhir */}
+            {}
             <div className="flex justify-between items-end px-2">
                 <p className="text-sm text-text-muted uppercase tracking-widest font-bold">Total Payment</p>
                 <p className="text-3xl font-serif text-champagne drop-shadow-[0_0_10px_rgba(212,175,55,0.3)]">
@@ -108,7 +108,7 @@ export default async function CheckoutSimulationPage({ params }: { params: Promi
                 </p>
             </div>
 
-            {/* Tombol Eksekusi Bayar */}
+            {}
             <form action={processDummyPayment} className="pt-6">
                 <button type="submit" className="w-full bg-champagne text-midnight px-6 py-4 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-white transition-all duration-300 flex items-center justify-center gap-3 hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:scale-[1.02]">
                    <CreditCard size={18} /> Simulate Payment <ArrowRight size={16} />

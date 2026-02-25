@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
-// 1. IMPORT ENUM DARI PRISMA CLIENT
+
 import { PaymentStatus, AppointmentStatus } from "@prisma/client";
 
 export async function POST(req: Request) {
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
     if (!appointmentId) return new NextResponse("Invalid Order ID", { status: 400 });
 
-    // 2. TAMBAHKAN TIPE ENUM DI DEKLARASI VARIABEL INI
+   
     let paymentStatus: PaymentStatus = "UNPAID";
     let appointmentStatus: AppointmentStatus = "PENDING";
 
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       paymentStatus = "FULLY_PAID";
       appointmentStatus = "CONFIRMED";
     } else if (transaction_status === "expire" || transaction_status === "cancel" || transaction_status === "deny") {
-      // PERBAIKAN DI SINI: paymentStatus diubah jadi UNPAID
+     
       paymentStatus = "UNPAID";
       appointmentStatus = "CANCELLED";
     } else if (transaction_status === "pending") {

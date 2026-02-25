@@ -9,7 +9,7 @@ export default async function DoctorDashboard() {
   const session = await getServerSession(authOptions);
   if (!session?.user) redirect("/login");
 
-  // Ambil semua jadwal dokter, lalu filter yang hari ini aja
+ 
   const allAppointments = await getDoctorAppointments(session.user.id);
   const todaysAppointments = allAppointments.filter(apt => isToday(new Date(apt.startTime)));
 
@@ -62,7 +62,7 @@ export default async function DoctorDashboard() {
                     </div>
                 </div>
 
-                {/* Tombol buat update status atau ngisi medical notes ke depannya */}
+                {}
                 <div className="mt-auto pt-4 border-t border-white/5">
                     <button className="w-full py-2.5 rounded-xl border border-champagne/30 text-champagne text-[10px] font-bold uppercase tracking-widest hover:bg-champagne hover:text-midnight transition-colors">
                       View Details

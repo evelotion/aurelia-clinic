@@ -5,7 +5,7 @@ import { ArrowRight, Sparkles, ShieldCheck, Clock } from "lucide-react";
 export default function HomePage() {
   return (
     <main className="flex flex-col min-h-screen bg-midnight text-text-light overflow-hidden">
-      {/* 1. HERO SECTION */}
+      {}
       <section className="relative h-screen flex flex-col items-center justify-center text-center px-4">
         <div className="absolute inset-0 z-0">
           <Image 
@@ -42,7 +42,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. BRAND PHILOSOPHY SECTION */}
+      {}
       <section className="py-32 px-4 relative">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           <div className="relative h-[500px] lg:h-[700px] w-full rounded-2xl overflow-hidden group">
@@ -83,7 +83,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. SIGNATURE TREATMENTS PREVIEW */}
+      {}
       <section className="py-32 px-4 bg-midnight-light relative border-y border-frost-border">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
@@ -122,7 +122,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. CLINIC STATISTICS / SOCIAL PROOF */}
+      {}
       <section className="py-24 px-4 bg-midnight relative border-b border-frost-border">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-8 text-center divide-x-0 md:divide-x divide-frost-border">
           {[

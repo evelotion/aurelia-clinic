@@ -1,7 +1,7 @@
 ﻿"use client";
 import { useState, useTransition, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createAppointment, getAvailableSlots } from "../actions/appointment-actions"; // Pastikan import getAvailableSlots
+import { createAppointment, getAvailableSlots } from "../actions/appointment-actions";
 
 type BookingData = {
   branches: any[];
@@ -18,7 +18,7 @@ export default function BookingForm({ data }: { data: BookingData }) {
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   
-  // State untuk menyimpan jam yang dinamis
+ 
   const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
@@ -32,7 +32,7 @@ export default function BookingForm({ data }: { data: BookingData }) {
     return data.doctors.filter((d) => d.branchId === selectedBranch);
   }, [selectedBranch, data.doctors]);
 
-  // Efek untuk memanggil jam kosong ketika dokter dan tanggal sudah diisi
+ 
   useEffect(() => {
     if (selectedDoctor && selectedDate) {
       setIsLoadingSlots(true);
@@ -72,7 +72,7 @@ export default function BookingForm({ data }: { data: BookingData }) {
             value={selectedBranch}
             onChange={(e) => {
               setSelectedBranch(e.target.value);
-              setSelectedDoctor(""); // Reset dokter jika cabang ganti
+              setSelectedDoctor("");
               setSelectedDate("");
             }}
             className="premium-input appearance-none bg-midnight-light"

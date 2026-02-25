@@ -21,29 +21,29 @@ export async function POST(req: Request) {
 
     if (!appointment) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-    // 1. CEK API KEY DI .ENV
+   
     const serverKey = process.env.MIDTRANS_SERVER_KEY;
 
-    // 2. LOGIC JIKA API KEY KOSONG -> Arahkan ke Halaman Simulasi
+   
     if (!serverKey || serverKey === "") {
       return NextResponse.json({ url: `/patient/checkout/${appointmentId}` });
     }
 
-    // 3. LOGIC JIKA API KEY ADA -> Generate Link Midtrans Asli
-    // Pastikan lo udah install package-nya: npm install midtrans-client
+   
+   
     const midtransClient = require("midtrans-client");
     let snap = new midtransClient.Snap({
-      isProduction: false, // ganti true kalau udah live
+      isProduction: false,
       serverKey: serverKey,
       clientKey: process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || ""
     });
 
-    // Hitung harga final dengan diskon
+   
     const basePrice = appointment.treatmentBranch.price;
     const discountPercent = appointment.patient.membership?.discountPercentage || 0;
     const finalPrice = basePrice - (basePrice * (discountPercent / 100));
 
-    // Siapkan parameter untuk Midtrans
+   
     let parameter = {
       transaction_details: {
         order_id: `AURELIA-${appointmentId}-${Date.now()}`,
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 
     const transaction = await snap.createTransaction(parameter);
     
-    // Kembalikan URL Snap Midtrans ke Client
+   
     return NextResponse.json({ url: transaction.redirect_url });
 
   } catch (error) {
