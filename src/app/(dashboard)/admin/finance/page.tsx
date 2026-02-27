@@ -2,24 +2,61 @@ import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import { ArrowUpRight } from "lucide-react";
 import DownloadReportButton from "./DownloadReportButton";
+import Pagination from "@/components/ui/Pagination";
 
-export default async function AdminFinancePage() {
- 
-  const paidAppointments = await prisma.appointment.findMany({
-    where: { paymentStatus: 'FULLY_PAID' },
-    include: {
-      patient: true,
-      treatmentBranch: {
-        include: { treatment: true, branch: true }
-      }
-    },
-    orderBy: { updatedAt: 'desc' }
-  });
+export default async function AdminFinancePage({
+  searchParams,
+}: {
+  searchParams: { page?: string };
+}) {
+  const currentPage = Number(searchParams?.page) || 1;
+  const limit = 10;
+  const skip = (currentPage - 1) * limit;
 
-  const totalRevenue = paidAppointments.reduce((sum, apt) => sum + apt.treatmentBranch.price, 0);
+  const [paginatedAppointments, totalTransactions, allPaidForReport] = await Promise.all([
+    // Query A: Fetch data khusus untuk dirender di tabel (hanya 10 data)
+    prisma.appointment.findMany({
+      where: { paymentStatus: 'FULLY_PAID' },
+      include: {
+        patient: true,
+        treatmentBranch: {
+          include: { treatment: true, branch: true }
+        }
+      },
+      orderBy: { updatedAt: 'desc' },
+      skip,
+      take: limit,
+    }),
+    
+    // Query B: Hitung total semua transaksi untuk menentukan jumlah halaman
+    prisma.appointment.count({
+      where: { paymentStatus: 'FULLY_PAID' }
+    }),
 
- 
-  const reportData = paidAppointments.map(apt => ({
+    // Query C: Fetch semua data dengan 'select' agar optimal dan tidak error di 'price'
+    prisma.appointment.findMany({
+      where: { paymentStatus: 'FULLY_PAID' },
+      select: {
+        id: true,
+        updatedAt: true,
+        patient: { select: { name: true } },
+        treatmentBranch: {
+          select: { 
+            price: true, // Karena pakai select, price bisa dipanggil di sini
+            treatment: { select: { name: true } }, 
+            branch: { select: { name: true } }
+          }
+        }
+      },
+      orderBy: { updatedAt: 'desc' }
+    })
+  ]);
+
+  const totalPages = Math.ceil(totalTransactions / limit);
+  
+  const totalRevenue = allPaidForReport.reduce((sum, apt) => sum + apt.treatmentBranch.price, 0);
+
+  const reportData = allPaidForReport.map(apt => ({
     date: format(new Date(apt.updatedAt), "dd MMM yyyy HH:mm"),
     patient: apt.patient.name,
     treatment: apt.treatmentBranch.treatment.name,
@@ -34,7 +71,6 @@ export default async function AdminFinancePage() {
             <h1 className="text-3xl font-serif text-text-light mb-2">Finance & Reports</h1>
             <p className="text-text-muted text-sm font-light">Monitor all validated payments from Midtrans.</p>
             
-            {}
             {reportData.length > 0 && (
               <DownloadReportButton data={reportData} />
             )}
@@ -58,14 +94,14 @@ export default async function AdminFinancePage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-frost-border">
-              {paidAppointments.length === 0 ? (
+              {paginatedAppointments.length === 0 ? (
                  <tr>
                     <td colSpan={5} className="py-10 text-center text-text-muted text-sm">
                        No completed transactions found yet.
                     </td>
                  </tr>
               ) : (
-                  paidAppointments.map((apt) => (
+                  paginatedAppointments.map((apt) => (
                     <tr key={apt.id} className="hover:bg-white/[0.02] transition-colors group">
                       <td className="py-5 px-6 text-sm text-text-muted font-mono">
                         {format(new Date(apt.updatedAt), "dd MMM yyyy, HH:mm")}
@@ -92,6 +128,12 @@ export default async function AdminFinancePage() {
             </tbody>
           </table>
         </div>
+        
+        {totalPages > 1 && (
+          <div className="p-6 border-t border-frost-border bg-midnight-light/30">
+            <Pagination totalPages={totalPages} />
+          </div>
+        )}
       </div>
     </div>
   );

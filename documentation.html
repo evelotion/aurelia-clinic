@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurelia Clinic - Documentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --accent-color: #3b82f6;
+            --text-color: #334155;
+            --bg-color: #f8fafc;
+            --sidebar-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            display: flex;
+            line-height: 1.6;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            box-sizing: border-box;
+        }
+        .sidebar h2 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar li {
+            margin-bottom: 0.75rem;
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 400;
+            transition: color 0.2s;
+        }
+        .sidebar a:hover {
+            color: var(--accent-color);
+        }
+        /* Main Content */
+        .content {
+            margin-left: 280px;
+            padding: 3rem 4rem;
+            max-width: 900px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .header-title {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .header-title h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin: 0 0 0.5rem 0;
+        }
+        .header-title p {
+            margin: 0;
+            color: #64748b;
+        }
+        section {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        h2, h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        pre {
+            background-color: var(--primary-color);
+            color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: monospace;
+            line-height: 1.5;
+        }
+        pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        .note {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>Aurelia Clinic</h2>
+        <ul>
+            <li><a href="#introduction">1. Introduction</a></li>
+            <li><a href="#features">2. Key Features</a></li>
+            <li><a href="#requirements">3. Server Requirements</a></li>
+            <li><a href="#installation">4. Installation Guide</a></li>
+            <li><a href="#database">5. Database Setup</a></li>
+            <li><a href="#credentials">6. Default Credentials</a></li>
+            <li><a href="#apis">7. Third-Party APIs</a></li>
+            <li><a href="#support">8. Support & Contact</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <div class="header-title">
+            <h1>Aurelia Clinic</h1>
+            <p>Premium Beauty Clinic Management System with Next.js 14</p>
+            <br>
+            <p><strong>Created by:</strong> Indra Dwi Ananda</p>
+            <p><strong>Version:</strong> 1.0.0</p>
+        </div>
+
+        <section id="introduction">
+            <h2>1. Introduction</h2>
+            <p>Thank you for purchasing <strong>Aurelia Clinic</strong>. This is a complete, production-ready Full-Stack Web Application designed specifically for beauty clinics, dermatologists, and aesthetic centers.</p>
+            <p>Built with the modern tech stack (Next.js 14 App Router, TypeScript, Tailwind CSS v4, and Prisma ORM), it offers a seamless experience for both clinic administrators and patients.</p>
+        </section>
+
+        <section id="features">
+            <h2>2. Key Features</h2>
+            <ul>
+                <li><strong>Smart Appointment Booking:</strong> Prevent double-booking with our custom scheduling engine.</li>
+                <li><strong>Multi-Branch Support:</strong> Manage multiple clinic locations efficiently.</li>
+                <li><strong>Dynamic Pricing:</strong> Set different prices for treatments based on the selected branch.</li>
+                <li><strong>Role-Based Access Control (RBAC):</strong> Secure dashboards for Admin, Doctors, and Patients.</li>
+                <li><strong>Payment Integration:</strong> Ready-to-use Midtrans Payment Gateway integration.</li>
+                <li><strong>Financial Reporting:</strong> Interactive revenue charts and downloadable CSV reports.</li>
+                <li><strong>Before-After Gallery:</strong> Interactive slider to showcase treatment results.</li>
+            </ul>
+        </section>
+
+        <section id="requirements">
+            <h2>3. Server Requirements</h2>
+            <p>Before installing the application, ensure your local machine or server meets the following requirements:</p>
+            <ul>
+                <li><strong>Node.js:</strong> Version 18.x or higher</li>
+                <li><strong>Package Manager:</strong> npm (comes with Node.js)</li>
+                <li><strong>Database:</strong> PostgreSQL (Local or Cloud like Supabase/Neon)</li>
+            </ul>
+        </section>
+
+        <section id="installation">
+            <h2>4. Installation Guide</h2>
+            <p>Follow these steps to get the application running on your local machine:</p>
+            
+            <h3>Step 1: Extract Files</h3>
+            <p>Extract the downloaded ZIP file and open the <code>Main_Files/aurelia-web</code> folder in your code editor (e.g., VS Code).</p>
+
+            <h3>Step 2: Install Dependencies</h3>
+            <p>Open your terminal within the project directory and run:</p>
+            <pre><code>npm install</code></pre>
+
+            <h3>Step 3: Environment Variables</h3>
+            <p>Rename the <code>.env.example</code> file to <code>.env</code> and fill in your configuration details:</p>
+            <pre><code># Database
+DATABASE_URL="postgresql://user:password@localhost:5432/aureliaclinic"
+
+# NextAuth
+NEXTAUTH_SECRET="your-super-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Midtrans Payment Gateway
+NEXT_PUBLIC_MIDTRANS_CLIENT_KEY="your-client-key"
+MIDTRANS_SERVER_KEY="your-server-key"
+
+# Cloudinary (Image Storage)
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your-cloud-name"
+CLOUDINARY_API_KEY="your-api-key"
+CLOUDINARY_API_SECRET="your-api-secret"
+
+# SMTP Email
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT=587
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"</code></pre>
+            <div class="note">
+                <strong>Note:</strong> You can generate a random string for <code>NEXTAUTH_SECRET</code> using <code>openssl rand -base64 32</code> in your terminal.
+            </div>
+        </section>
+
+        <section id="database">
+            <h2>5. Database Setup</h2>
+            <p>We use Prisma ORM. Once your database is ready and connected via the <code>DATABASE_URL</code> in your <code>.env</code> file, run the following commands:</p>
+            
+            <h3>Push Schema to Database:</h3>
+            <pre><code>npx prisma db push</code></pre>
+
+            <h3>Seed Initial Data (Important):</h3>
+            <p>This command will create the default Admin, Doctor, and Patient accounts, as well as dummy branches and treatments.</p>
+            <pre><code>npx prisma db seed</code></pre>
+
+            <h3>Run the Application:</h3>
+            <pre><code>npm run dev</code></pre>
+            <p>Your application is now running at <a href="http://localhost:3000" target="_blank">http://localhost:3000</a>.</p>
+        </section>
+
+        <section id="credentials">
+            <h2>6. Default Demo Credentials</h2>
+            <p>If you ran the seed command, use these accounts to log in and explore the application:</p>
+            <table>
+                <tr>
+                    <th>Role</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                </tr>
+                <tr>
+                    <td><strong>Admin</strong></td>
+                    <td>admin@aureliaclinic.com</td>
+                    <td>password123</td>
+                </tr>
+                <tr>
+                    <td><strong>Doctor</strong></td>
+                    <td>doctor@aureliaclinic.com</td>
+                    <td>password123</td>
+                </tr>
+                <tr>
+                    <td><strong>Patient</strong></td>
+                    <td>patient@aureliaclinic.com</td>
+                    <td>password123</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="apis">
+            <h2>7. Third-Party APIs Setup</h2>
+            <h3>Midtrans (Payment)</h3>
+            <p>Register at <a href="https://midtrans.com/" target="_blank">Midtrans</a>. Get your Sandbox/Production keys and place them in the <code>.env</code> file. Set your Midtrans Webhook URL to: <code>https://yourdomain.com/api/webhooks/midtrans</code>.</p>
+
+            <h3>Cloudinary (Image Storage)</h3>
+            <p>Register at <a href="https://cloudinary.com/" target="_blank">Cloudinary</a>. Go to Dashboard to get your Cloud Name, API Key, and API Secret. This is used for uploading Gallery before-after pictures.</p>
+        </section>
+
+        <section id="support">
+            <h2>8. Support & Contact</h2>
+            <p>If you have any questions, face issues during installation, or need custom modifications, feel free to contact me via my Envato profile page.</p>
+            <p>Please note that the support does not include advanced customization or server deployment configuration, but I am always happy to point you in the right direction!</p>
+            <br>
+            <p><em>Thank you once again for your purchase. If you like this product, please consider leaving a 5-star rating!</em></p>
+        </section>
+    </main>
+
+</body>
+</html>
